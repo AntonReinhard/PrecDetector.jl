@@ -1,8 +1,17 @@
 function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
-    no_ε = if iszero(p.x)
-        iszero(p.big) ? 0 : Inf
+    no_ε = _no_epsilons(p)
+
+    color = if no_ε < 10
+        :green
+    elseif no_ε < 100
+        :yellow
+    elseif no_ε < 1000
+        :red
     else
-        round(Int, abs(p.big / p.x - one(BigFloat)) / big(eps(T)))
+        :magenta
     end
-    return print(io, "$(T(p.big)), ε=$no_ε")
+
+    print(io, "$(T(p.big)) ")
+
+    return printstyled(io, "<ε=$no_ε>"; color = color)
 end

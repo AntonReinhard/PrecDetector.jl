@@ -4,7 +4,9 @@ macro _unary_function(operator)
     return Meta.parse("
     begin
         function Base.:$(operator)(p::P{T}) where {T<:AbstractFloat}
-            return P($(operator)(p.x), $(operator)(p.big))
+            res = P($(operator)(p.x), $(operator)(p.big))
+            _assert_epsilons(res)
+            return res
         end
     end
     ")
@@ -14,19 +16,29 @@ macro _binary_function(operator)
     return Meta.parse("
     begin
         function Base.:$(operator)(p1::P, p2::P)
-            return P($(operator)(p1.x, p2.x), $(operator)(p1.big, p2.big))
+            res = P($(operator)(p1.x, p2.x), $(operator)(p1.big, p2.big))
+            _assert_epsilons(res)
+            return res
         end
         function Base.:$(operator)(p1::Real, p2::P)
-            return P($(operator)(p1, p2.x), $(operator)(p1, p2.big))
+            res = P($(operator)(p1, p2.x), $(operator)(p1, p2.big))
+            _assert_epsilons(res)
+            return res
         end
         function Base.:$(operator)(p1::P, p2::Real)
-            return P($(operator)(p1.x, p2), $(operator)(p1.big, p2))
+            res =  P($(operator)(p1.x, p2), $(operator)(p1.big, p2))
+            _assert_epsilons(res)
+            return res
         end
         function Base.:$(operator)(p1::Integer, p2::P)
-            return P($(operator)(p1, p2.x), $(operator)(p1, p2.big))
+            res =  P($(operator)(p1, p2.x), $(operator)(p1, p2.big))
+            _assert_epsilons(res)
+            return res
         end
         function Base.:$(operator)(p1::P, p2::Integer)
-            return P($(operator)(p1.x, p2), $(operator)(p1.big, p2))
+            res = P($(operator)(p1.x, p2), $(operator)(p1.big, p2))
+            _assert_epsilons(res)
+            return res
         end
     end
     ")
@@ -173,9 +185,12 @@ for op in [
         sinc, cosc,                                 # normalized
         sind, cosd, tand, cotd, secd, cscd,         # radians versions
         asind, acosd, atand, acotd, asecd, acscd,   # radians arc versions
+        cis, sinpi, cospi,                          # other
     ]
     eval(Meta.parse("@_unary_function $op"))
 end
+
+Base.sincos(p::P) = (sin(p), cos(p))
 
 # rand functions
 function Base.rand(rng::Random.AbstractRNG, type::Type{P{T}}) where {T <: AbstractFloat}
