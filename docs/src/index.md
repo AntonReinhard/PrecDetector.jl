@@ -1,5 +1,7 @@
 # PrecDetector.jl
 
+[![docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://AntonReinhard.github.io/PrecDetector.jl/dev/)
+
 This is a package to find imprecisions in chains of arithmetic functions.
 
 ## How it Works
