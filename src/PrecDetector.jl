@@ -2,6 +2,7 @@ module PrecDetector
 
 export PrecCarrier
 export precify
+export significant_digits
 
 include("type.jl")
 include("utils.jl")
