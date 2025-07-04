@@ -9,7 +9,7 @@ end
 """
     significant_digits(p::PrecCarrier{T})
 
-Return the number of significant decimal digits currently carried by this PrecCarrier.
+Return the number of significant decimal digits currently carried by this [`PrecCarrier`](@ref).
 
 ```jldoctest
 julia> using PrecDetector
@@ -21,6 +21,7 @@ julia> function unstable(x, N)
            for i in 1:N w = w^2 end
            return w
        end
+unstable (generic function with 1 method)
 
 julia> unstable(precify(0.5), 30)
 0.4999999971854335 <ε=25351362>
@@ -76,6 +77,7 @@ function reset_eps!(x::Custom)
     reset_eps!(x.v2)
     # ...
     return x
+end
 ```
 """
 @inline function reset_eps!(p::P{T}) where {T <: AbstractFloat}

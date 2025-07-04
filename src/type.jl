@@ -8,6 +8,8 @@ with your value(s), and finally, print it to check the number of accumulated
 epsilons of error.
 
 ```jldoctest
+julia> using PrecDetector
+
 julia> function unstable(x, N)
            y = abs(x)
            for i in 1:N y = sqrt(y) end

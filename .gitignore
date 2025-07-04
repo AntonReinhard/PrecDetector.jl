@@ -1,2 +1,5 @@
 .vscode/
 Manifest.toml
+docs/build
+docs/src/manual.ipynb
+docs/src/manual.md
