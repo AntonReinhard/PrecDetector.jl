@@ -29,10 +29,10 @@ end
 @inline function precify(T::Type{<:P}, t::AbstractArray)
     return precify.(T, t)
 end
-@inline function precify(::Type{P{T}}, t::T2) where {T<:AbstractFloat, T2<:AbstractFloat}
+@inline function precify(::Type{P{T}}, t::T2) where {T <: AbstractFloat, T2 <: AbstractFloat}
     return convert(P{T}, t)
 end
-@inline function precify(::Type{P}, t::T) where {T<:AbstractFloat}
+@inline function precify(::Type{P}, t::T) where {T <: AbstractFloat}
     return convert(P{T}, t)
 end
 @inline function precify(T::Type{<:P}, t::Integer)
