@@ -11,7 +11,7 @@ function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
         :magenta
     end
 
-    print(io, "$(T(p.big)) ")
+    print(io, "$(p.x) ")
 
     return printstyled(io, "<ε=$no_ε>"; color = color)
 end

@@ -1,10 +1,12 @@
 module PrecDetector
 
 export PrecCarrier
+export precify
 
 include("type.jl")
 include("utils.jl")
 include("macros.jl")
+include("precify.jl")
 
 include("functionality/arithmetic.jl")
 include("functionality/compare.jl")
