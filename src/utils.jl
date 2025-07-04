@@ -30,7 +30,7 @@ julia> significant_digits(ans)
 ```
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
-    sig_digits = -log10(eps() * (_no_epsilons(p) + 1))
+    sig_digits = -log10(eps(T) * (_no_epsilons(p) + 1))
     return sig_digits
 end
 
@@ -39,4 +39,52 @@ function _assert_epsilons(p::P{T}) where {T <: AbstractFloat}
         throw("$p exceeded epsilon limit of 1000")
     end=#
     return nothing
+end
+
+"""
+    reset_eps!(p::PrecCarrier{AbstractFloat})
+
+Reset the precision carrier to zero epsilons. Can be called on
+containers (`AbstractArray`s or `Tuple`s) to reset all underlying `PrecCarrier`s.
+
+```jldoctest
+julia> using PrecDetector
+
+julia> function unstable(x, N)
+           y = abs(x)
+           for i in 1:N y = sqrt(y) end
+           w = y
+           for i in 1:N w = w^2 end
+           return w
+       end
+unstable (generic function with 1 method)
+
+julia> p = unstable(precify(1.5), 30)
+1.4999996689838975 <ε=993842883>
+
+julia> reset_eps!(p)
+1.4999996689838975 <ε=0>
+```
+
+Custom types can be overloaded by implementing a function dispatching
+the call downwards to all relevant members. Note that this is a muting
+operation and therefore requires mutability of the members.
+
+```julia
+function reset_eps!(x::Custom)
+    reset_eps!(x.v1)
+    reset_eps!(x.v2)
+    # ...
+    return x
+```
+"""
+@inline function reset_eps!(p::P{T}) where {T <: AbstractFloat}
+    p.big = big(p.x)
+    return p
+end
+@inline function reset_eps!(t::Tuple)
+    return reset_eps!.(T, t)
+end
+@inline function reset_eps!(t::AbstractArray)
+    return reset_eps!.(T, t)
 end

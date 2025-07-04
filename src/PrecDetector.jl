@@ -3,6 +3,7 @@ module PrecDetector
 export PrecCarrier
 export precify
 export significant_digits
+export reset_eps!
 
 include("type.jl")
 include("utils.jl")

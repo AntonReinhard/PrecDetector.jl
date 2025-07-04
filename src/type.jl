@@ -31,7 +31,7 @@ julia> unstable(precify(2), 128)
 
 ```
 """
-struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
+mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
     big::BigFloat
 end
