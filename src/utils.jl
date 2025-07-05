@@ -1,6 +1,20 @@
+"""
+    _no_epsilons(p::PrecCarrier{T})
+
+Return the number of epsilons of relative difference between `p.big` and `p.x`.
+Returns -1 if the difference is infinite.
+"""
 function _no_epsilons(p::P{T}) where {T <: AbstractFloat}
     return if iszero(p.x)
-        iszero(p.big) ? 0 : Inf
+        iszero(p.big) ? 0 : -1
+    elseif isnan(p.x)
+        isnan(p.big) ? 0 : -1
+    elseif !isfinite(p.x)
+        if sign(p.x) == sign(p.big)
+            isfinite(p.big) ? -1 : 0
+        else
+            -1
+        end
     else
         round(Int, abs(p.big / p.x - one(BigFloat)) / big(eps(T)))
     end
@@ -31,15 +45,12 @@ julia> significant_digits(ans)
 ```
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
-    sig_digits = -log10(eps(T) * (_no_epsilons(p) + 1))
+    epsilons = _no_epsilons(p)
+    if (epsilons < 0)
+        return 0.0
+    end
+    sig_digits = -log10(eps(T) * (epsilons + 1))
     return sig_digits
-end
-
-function _assert_epsilons(p::P{T}) where {T <: AbstractFloat}
-    #=if _no_epsilons(p) > 1000
-        throw("$p exceeded epsilon limit of 1000")
-    end=#
-    return nothing
 end
 
 """
@@ -90,3 +101,12 @@ end
 @inline function reset_eps!(t::AbstractArray)
     return reset_eps!.(T, t)
 end
+
+"""
+    _float_type(::P{T})
+    _float_type(::Type{P{T}})
+
+Return the underlying float type of the [`PrecCarrier`](@ref).
+"""
+_float_type(::P{T}) where {T} = T
+_float_type(::Type{P{T}}) where {T} = T

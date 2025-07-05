@@ -10,11 +10,12 @@
 @_unary_comparison ispow2
 @_unary_comparison isfinite
 @_unary_comparison isnan
-#@_unary_comparison issubnormal <- not defined for BigFloat
 @_unary_comparison isinteger
 @_unary_comparison iseven
 @_unary_comparison isodd
 
+# @_unary_comparison issubnormal <- not defined for BigFloat
+Base.issubnormal(p::P) = issubnormal(p.x)
 
 function Base.isapprox(p1::P, p2::P; kwargs...)
     truth = isapprox(p1.big, p2.big; kwargs...)

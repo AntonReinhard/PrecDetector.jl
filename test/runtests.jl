@@ -7,3 +7,7 @@ end
 @safetestset "precify" begin
     include("precify.jl")
 end
+
+@safetestset "comparisons" begin
+    include("comparisons.jl")
+end
