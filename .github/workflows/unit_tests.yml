@@ -4,36 +4,45 @@ on:
   push:
     branches:
       - main
-    tags: "*"
+    tags: '*'
   pull_request:
-
-env:
-  # keep the depot directly in the repository for the cache
-  JULIA_DEPOT_PATH: './.julia'
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: ['1.10', '1.11', 'pre']
+        julia-arch: [x64, x86]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Julia environment
         uses: julia-actions/setup-julia@v2
         with:
-          version: "1.10"
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
 
       - name: Add Julia cache
         uses: julia-actions/cache@v2
 
       - name: Instantiate
-        run: |
-          julia --project=./ -e 'using Pkg; Pkg.instantiate()'
+        run: julia --project=./ -e 'using Pkg; Pkg.instantiate()'
 
       - name: Run tests
-        run: |
-          julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector"; coverage=true)'
-          CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+        uses: julia-actions/julia-runtest@v1
+
+      - name: Process code coverage
+        uses: julia-actions/julia-processcoverage@v1
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./lcov.inf
+          flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }}

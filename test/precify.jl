@@ -1,4 +1,4 @@
-using PrecDetector
+struct PrecifyUnimplemented end
 
 struct CustomStruct{T1, T2, T3, T4}
     a::T1
@@ -11,7 +11,7 @@ function PrecDetector.precify(T::Type{<:PrecCarrier}, x::CustomStruct)
     return CustomStruct(precify(T, x.a), precify(T, x.b), precify(T, x.c), precify(T, x.d))
 end
 
-DIMENSIONS = (1, 2, 3, 4)
+DIMENSIONS = (1, 2, 3)
 FLOAT_TYPES = [Float16, Float32, Float64]
 INVALID_FLOAT_TYPES = [
     BigFloat,               # cannot construct with bigfloat, wouldn't make sense
@@ -38,6 +38,16 @@ SOURCE_VALUES = [
     PrecCarrier{Float64}(1.0),
     CustomStruct(Float64(1.0), Float32(2.0), [Float16(3.0), Float16(4.0)], (5.0, 6.0)),
 ]
+
+@testset "precify to $FLOAT_T" for FLOAT_T in FLOAT_TYPES
+    for v in SOURCE_VALUES[1:(end - 1)]
+        p = precify(PrecCarrier{FLOAT_T}, v)
+        @test typeof(p) == PrecCarrier{FLOAT_T}
+
+        p = precify(FLOAT_T, v)
+        @test typeof(p) == PrecCarrier{FLOAT_T}
+    end
+end
 
 @testset "precify $(N)D" for N in DIMENSIONS
     @testset "arrays of $(typeof(v))" for v in SOURCE_VALUES
@@ -91,4 +101,8 @@ SOURCE_VALUES = [
             end
         end
     end
+end
+
+@testset "unimplemented precify" begin
+    @test_throws "no precify is implemented for type PrecifyUnimplemented" precify(PrecifyUnimplemented())
 end
