@@ -109,5 +109,10 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         p = PrecCarrier{F}(1.0, 1.0 + 1500 * eps(F))
         print(buf, p)
         @test String(take!(buf)) == "1.0 <ε=1500>"
+
+        # overflow of ε
+        p = PrecCarrier{F}(1.0, 1.0 + big(typemax(Int64)) * 2 * eps(F))
+        print(buf, p)
+        @test String(take!(buf)) == "1.0 <ε=Inf>"
     end
 end

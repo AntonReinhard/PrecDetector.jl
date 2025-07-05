@@ -17,10 +17,10 @@ function _no_epsilons(p::P{T}) where {T <: AbstractFloat}
         end
     else
         no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(T))
-        if (no_eps > typemax(Int))
+        if (no_eps > typemax(Int64))
             return -1
         else
-            return round(Int, no_eps)
+            return round(Int64, no_eps)
         end
     end
 end

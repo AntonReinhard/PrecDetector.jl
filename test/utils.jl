@@ -11,7 +11,7 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         # As a user, do *not* use this constructor!
         p = PrecCarrier(one(F), big(1.0 + 1.0e-5))
 
-        @test _no_epsilons(p) == round(Int, 1.0e-5 / eps(F))
+        @test _no_epsilons(p) == round(Int64, 1.0e-5 / eps(F))
 
         @test _no_epsilons(precify(F(Inf))) == 0
         @test _no_epsilons(precify(F(-Inf))) == 0
