@@ -1,0 +1,34 @@
+name: unit_tests
+
+on:
+  push:
+    branches:
+      - main
+    tags: "*"
+  pull_request:
+
+env:
+  # keep the depot directly in the repository for the cache
+  JULIA_DEPOT_PATH: './.julia'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Julia environment
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.10"
+
+      - name: Instantiate
+        run: |
+          julia --project=./ -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Run tests
+        run: julia --project=./ -e 'using Pkg; Pkg.test()'

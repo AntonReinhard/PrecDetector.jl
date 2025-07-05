@@ -48,7 +48,7 @@ macro _unary_comparison(operator)
         function Base.:($(operator))(p1::P)
             truth = $(operator)(p1.big)
             reality = $(operator)(p1.x)
-            if truth != reality 
+            if truth != reality
                 @warn \"comparison result mismatch\"
             end
             return reality
@@ -63,7 +63,7 @@ macro _binary_comparison(operator)
         function Base.:($(operator))(p1::P, p2::P)
             truth = $(operator)(p1.big, p2.big)
             reality = $(operator)(p1.x, p2.x)
-            if truth != reality 
+            if truth != reality
                 @warn \"comparison result mismatch\"
             end
             return reality
@@ -71,7 +71,7 @@ macro _binary_comparison(operator)
         function Base.:($(operator))(p1::Real, p2::P)
             truth = $(operator)(p1, p2.big)
             reality = $(operator)(p1, p2.x)
-            if truth != reality 
+            if truth != reality
                 @warn \"comparison result mismatch\"
             end
             return reality
@@ -79,7 +79,7 @@ macro _binary_comparison(operator)
         function Base.:($(operator))(p1::P, p2::Real)
             truth = $(operator)(p1.big, p2)
             reality = $(operator)(p1.x, p2)
-            if truth != reality 
+            if truth != reality
                 @warn \"comparison result mismatch\"
             end
             return reality

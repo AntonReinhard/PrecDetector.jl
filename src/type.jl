@@ -36,6 +36,17 @@ julia> unstable(precify(2), 128)
 mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
     big::BigFloat
+
+    function PrecCarrier{T}(x, b) where {T <: AbstractFloat}
+        @assert T != BigFloat "can not create a PrecCarrier with BigFloat"
+        @assert !(T <: PrecCarrier) "can not create a PrecCarrier with $T"
+        return new{T}(x, b)
+    end
+end
+
+# allow inference of generic T from given value
+function PrecCarrier(x::T, b::BigFloat) where {T <: AbstractFloat}
+    return PrecCarrier{T}(x, b)
 end
 
 const P = PrecCarrier
@@ -48,13 +59,15 @@ P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
 
 # cast other PrecCarrier
 P{T}(p::P) where {T <: AbstractFloat} = P{T}(p.x, p.big)
-P{T}(p::P{T}) where {T <: AbstractFloat} = P(p.x, p.big)
+P{T}(p::P{T}) where {T <: AbstractFloat} = P{T}(p.x, p.big)
+
 
 # dispatch to default type Float64
 P(x::T) where {T <: Real} = P{Float64}(x)
 
 # dispatch to x type if its an AbstractFloat
 P(x::T) where {T <: AbstractFloat} = P{T}(x)
+P(x::P{T}) where {T <: AbstractFloat} = P{T}(x)
 
 # more specific dispatch to default type for rationals to remove ambiguous call
 P(x::Rational) = P{Float64}(x)

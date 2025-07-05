@@ -1,7 +1,9 @@
-function Base.convert(::Type{TF}, p::P) where {TF <: AbstractFloat}
-    return P(convert(TF, p.x), p.big)
+function Base.convert(::Type{T}, p::P) where {T <: AbstractFloat}
+    return P{T}(convert(T, p.x), p.big)
 end
-
-function Base.convert(::Type{P{TF}}, p::P) where {TF <: AbstractFloat}
-    return P(convert(TF, p.x), p.big)
+function Base.convert(::Type{P{T}}, p::P) where {T <: AbstractFloat}
+    return P{T}(convert(T, p.x), p.big)
+end
+function Base.convert(::Type{P}, p::P{T}) where {T <: AbstractFloat}
+    return P{T}(convert(T, p.x), p.big)
 end

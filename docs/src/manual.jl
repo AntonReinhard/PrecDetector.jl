@@ -39,10 +39,10 @@ precify(A(1.0))
 
 # The resulting precified object can be used like a normal floating point number:
 
-p = atan((p + 10) ^ 2 * pi)
+p = atan((p + 10)^2 * pi)
 
 # When displaying the result, the number of epsilons (ε) is calculated.
-# It represents the number of machine precision of the underlying floating 
+# It represents the number of machine precision of the underlying floating
 # point type, that it differs relative to the arbitrary precision calculation.
 
 p = tan(p)
