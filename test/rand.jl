@@ -1,4 +1,3 @@
-using PrecDetector
 using Random
 
 PREC_TYPES = [PrecCarrier, PrecCarrier{Float16}, PrecCarrier{Float32}, PrecCarrier{Float64}]

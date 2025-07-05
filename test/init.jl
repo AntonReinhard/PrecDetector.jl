@@ -1,5 +1,3 @@
-using PrecDetector
-
 PREC_TYPES = [PrecCarrier, PrecCarrier{Float16}, PrecCarrier{Float32}, PrecCarrier{Float64}]
 
 @testset "ones of $P" for P in PREC_TYPES

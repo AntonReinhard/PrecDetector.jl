@@ -15,16 +15,12 @@
 
 # rounding (for floating point targets, do the rounding, but keep x and big separate and return a PrecCarrier again)
 @_unary_function round
-Base.round(::Type{T}, p::P) where {T} = round(T, p.x)
 Base.round(::Type{T}, p::P) where {T <: Integer} = round(T, p.x) # necessary in 1.10
 @_unary_function floor
-Base.floor(::Type{T}, p::P) where {T} = floor(T, p.x)
 Base.floor(::Type{T}, p::P) where {T <: Integer} = floor(T, p.x)
 @_unary_function ceil
-Base.ceil(::Type{T}, p::P) where {T} = ceil(T, p.x)
 Base.ceil(::Type{T}, p::P) where {T <: Integer} = ceil(T, p.x)
 @_unary_function trunc
-Base.trunc(::Type{T}, p::P) where {T} = trunc(T, p.x)
 Base.trunc(::Type{T}, p::P) where {T <: Integer} = trunc(T, p.x)
 
 if (VERSION >= v"1.11")
@@ -34,8 +30,6 @@ if (VERSION >= v"1.11")
     Base.ceil(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(ceil(T, p.x), big(ceil(T, p.big)))
     Base.trunc(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(trunc(T, p.x), big(trunc(T, p.big)))
 end
-
-Base.round(p::P, mode::RoundingMode) = round(p.x, mode)
 
 # powers, logs, roots
 @_unary_function sqrt

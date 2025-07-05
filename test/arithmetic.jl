@@ -1,5 +1,3 @@
-using PrecDetector
-
 PREC_TYPES = [PrecCarrier{Float16}, PrecCarrier{Float32}, PrecCarrier{Float64}]
 TEST_VALUES = [
     0.0,

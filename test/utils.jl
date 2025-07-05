@@ -1,5 +1,3 @@
-using PrecDetector
-
 using PrecDetector: _no_epsilons, _float_type
 
 FLOAT_TYPES = [Float16, Float32, Float64]

@@ -38,46 +38,16 @@ end
 
 macro _unary_comparison(operator)
     return Meta.parse("
-    begin
-        function Base.:($(operator))(p1::P)
-            truth = $(operator)(p1.big)
-            reality = $(operator)(p1.x)
-            if truth != reality
-                @warn \"comparison result mismatch\"
-            end
-            return reality
-        end
-    end
+        Base.:($(operator))(p1::P) = $(operator)(p1.x)
     ")
 end
 
 macro _binary_comparison(operator)
     return Meta.parse("
     begin
-        function Base.:($(operator))(p1::P, p2::P)
-            truth = $(operator)(p1.big, p2.big)
-            reality = $(operator)(p1.x, p2.x)
-            if truth != reality
-                @warn \"comparison result mismatch\"
-            end
-            return reality
-        end
-        function Base.:($(operator))(p1::Real, p2::P)
-            truth = $(operator)(p1, p2.big)
-            reality = $(operator)(p1, p2.x)
-            if truth != reality
-                @warn \"comparison result mismatch\"
-            end
-            return reality
-        end
-        function Base.:($(operator))(p1::P, p2::Real)
-            truth = $(operator)(p1.big, p2)
-            reality = $(operator)(p1.x, p2)
-            if truth != reality
-                @warn \"comparison result mismatch\"
-            end
-            return reality
-        end
+        Base.:($(operator))(p1::P, p2::P)= $(operator)(p1.x, p2.x)
+        Base.:($(operator))(p1::Real, p2::P) = $(operator)(p1, p2.x)
+        Base.:($(operator))(p1::P, p2::Real) = $(operator)(p1.x, p2)
     end
     ")
 end

@@ -1,5 +1,3 @@
-using PrecDetector
-
 FLOAT_TYPES = [Float16, Float32, Float64]
 INVALID_FLOAT_TYPES = [
     BigFloat,               # cannot construct with bigfloat, wouldn't make sense

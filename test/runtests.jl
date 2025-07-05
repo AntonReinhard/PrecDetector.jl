@@ -1,29 +1,36 @@
-using SafeTestsets
+using TestItemRunner
+using TestItems
 
-@safetestset "PrecCarrier conversions" begin
+@run_package_tests
+
+@testitem "PrecCarrier conversions" begin
     include("conversions.jl")
 end
 
-@safetestset "precify" begin
+@testitem "precify" begin
     include("precify.jl")
 end
 
-@safetestset "inits" begin
+@testitem "inits" begin
     include("init.jl")
 end
 
-@safetestset "comparisons" begin
+@testitem "comparisons" begin
     include("comparisons.jl")
 end
 
-@safetestset "arithmetic" begin
+@testitem "arithmetic" begin
     include("arithmetic.jl")
 end
 
-@safetestset "utils" begin
+@testitem "utils" begin
     include("utils.jl")
 end
 
-@safetestset "random" begin
+@testitem "random" begin
     include("rand.jl")
+end
+
+@testitem "printing" begin
+    include("print.jl")
 end
