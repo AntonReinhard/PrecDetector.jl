@@ -3,3 +3,4 @@ Manifest.toml
 docs/build
 docs/src/literal/*.ipynb
 docs/src/literal/*.md
+*.cov

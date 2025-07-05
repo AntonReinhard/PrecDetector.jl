@@ -14,9 +14,9 @@ function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
     print(io, "$(p.x) ")
 
     if (no_ε < 0)
-        return printstyled(io, "<ε=Inf>"; color = color)
+        printstyled(io, "<ε=Inf>"; color = color)
     else
-        return printstyled(io, "<ε=$no_ε>"; color = color)
+        printstyled(io, "<ε=$no_ε>"; color = color)
     end
 
     return nothing

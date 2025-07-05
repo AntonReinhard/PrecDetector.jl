@@ -28,8 +28,7 @@ julia> precify(PrecCarrier{Float32}, [0, 1.0, 2.0f0])
 @inline precify(T::Type{<:P}, t::Any) = throw("no precify is implemented for type $(typeof(t))")
 
 # convert PrecCarrier to PrecCarrier calls
-@inline precify(T::Type{P}, p::P) = T(p)
-@inline precify(T::Type{<:AbstractFloat}, p::P) = P{T}(p)
+@inline precify(T::Type{<:P}, p::P) = T(p)
 
 # convert basic number types
 @inline precify(T::Type{<:P}, x::AbstractFloat) = convert(T, x)

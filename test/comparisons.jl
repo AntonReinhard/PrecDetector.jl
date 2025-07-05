@@ -17,28 +17,52 @@ TEST_VALUES = [
 
     @testset "unary comparisons" begin
         for v in FLOAT_T.(TEST_VALUES)
-            @test iszero(v) == iszero(P(v))
-            @test isone(v) == isone(P(v))
-            @test ispow2(v) == ispow2(P(v))
-            @test isfinite(v) == isfinite(P(v))
-            @test isnan(v) == isnan(P(v))
-            @test isinteger(v) == isinteger(P(v))
-            @test iseven(v) == iseven(P(v))
-            @test isodd(v) == isodd(P(v))
-            @test issubnormal(v) == issubnormal(P(v))
+            p = P(v)
+
+            @test iszero(v) == iszero(p)
+            @test isone(v) == isone(p)
+            @test ispow2(v) == ispow2(p)
+            @test isfinite(v) == isfinite(p)
+            @test isnan(v) == isnan(p)
+            @test isinteger(v) == isinteger(p)
+            @test iseven(v) == iseven(p)
+            @test isodd(v) == isodd(p)
+            @test issubnormal(v) == issubnormal(p)
+
+            @test eps(FLOAT_T) == eps(P)
+
+            if (isnan(eps(v)))   # if eps(v) is NaN, eps(p) is NaN, and NaN != NaN
+                @test isnan(eps(p))
+                @test typeof(eps(p)) == FLOAT_T
+            else
+                @test eps(v) == eps(p)
+            end
         end
     end
 
     @testset "binary comparisons" begin
-        for v1 in FLOAT_T.(TEST_VALUES), v2 in FLOAT_T.(TEST_VALUES)
-            pv1 = P(v1)
-            pv2 = P(v2)
-            @test (v1 == v2) == (pv1 == pv2)
-            @test (v1 != v2) == (pv1 != pv2)
-            @test (v1 < v2) == (pv1 < pv2)
-            @test (v1 <= v2) == (pv1 <= pv2)
-            @test (v1 > v2) == (pv1 > pv2)
-            @test (v1 >= v2) == (pv1 >= pv2)
+        # ignore the fp16 subnormal number here, it leads to inequalities
+        for x1 in TEST_VALUES[1:(end - 1)], x2 in TEST_VALUES[1:(end - 1)]
+            for (v1, v2) in [ # test interoperability with non PrecCarrier values
+                    (FLOAT_T(x1), FLOAT_T(x2)),
+                    (FLOAT_T(x1), x2),
+                    (x1, FLOAT_T(x2)),
+                ]
+                for (pv1, pv2) in [
+                        (P(v1), P(v2)),
+                        (P(v1), v2),
+                        (v1, P(v2)),
+                    ]
+                    @test (v1 == v2) == (pv1 == pv2)
+                    @test (v1 != v2) == (pv1 != pv2)
+                    @test (v1 < v2) == (pv1 < pv2)
+                    @test (v1 <= v2) == (pv1 <= pv2)
+                    @test (v1 > v2) == (pv1 > pv2)
+                    @test (v1 >= v2) == (pv1 >= pv2)
+
+                    @test isapprox(v1, v2) == isapprox(pv1, pv2)
+                end
+            end
         end
     end
 end

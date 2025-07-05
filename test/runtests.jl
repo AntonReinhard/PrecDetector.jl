@@ -11,3 +11,7 @@ end
 @safetestset "comparisons" begin
     include("comparisons.jl")
 end
+
+@safetestset "inits" begin
+    include("init.jl")
+end
