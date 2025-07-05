@@ -72,4 +72,14 @@ SOURCE_VALUES = [
     @testset "invalid typed constructor PrecCarrier{$F}" for F in INVALID_FLOAT_TYPES
         @test_throws AssertionError("can not create a PrecCarrier with $F") PrecCarrier{F}(v)
     end
+
+    @testset "convert from PrecCarrier{$F1} to $F2" for F1 in FLOAT_TYPES, F2 in FLOAT_TYPES
+        # conversion is overloaded to remain at stable PrecCarrier types inside calculations
+        # but the internal float type is converted
+        p = PrecCarrier{F1}(v)
+        pc = convert(F2, p)
+
+        @test typeof(pc) == PrecCarrier{F2}
+        @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
+    end
 end

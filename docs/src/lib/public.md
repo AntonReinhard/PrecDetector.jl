@@ -14,4 +14,5 @@ PrecCarrier
 precify
 significant_digits
 reset_eps!
+Base.eltype
 ```
