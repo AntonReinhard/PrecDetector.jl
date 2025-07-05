@@ -15,3 +15,7 @@ end
 @safetestset "inits" begin
     include("init.jl")
 end
+
+@safetestset "utils" begin
+    include("utils.jl")
+end

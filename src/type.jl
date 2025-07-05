@@ -37,6 +37,16 @@ mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
     big::BigFloat
 
+    """
+        PrecCarrier{T}(x, b)
+
+    Construct a `PrecCarrier` directly from a float and a `BigFloat` value. The two
+    values should be the same value, as far as precision allows.
+
+    !!! warn
+        This function should never be used by users. Instead, use [`precify`](@ref) or the
+        various constructors from single arguments.
+    """
     function PrecCarrier{T}(x, b) where {T <: AbstractFloat}
         @assert T != BigFloat "can not create a PrecCarrier with BigFloat"
         @assert !(T <: PrecCarrier) "can not create a PrecCarrier with $T"
