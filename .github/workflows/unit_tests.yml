@@ -31,4 +31,9 @@ jobs:
           julia --project=./ -e 'using Pkg; Pkg.instantiate()'
 
       - name: Run tests
-        run: julia --project=./ -e 'using Pkg; Pkg.test()'
+        run: julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector"; coverage=true)'
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
