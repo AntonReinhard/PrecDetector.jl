@@ -26,9 +26,14 @@ jobs:
         with:
           version: "1.10"
 
+      - name: Add Julia cache
+        uses: julia-actions/cache@v2
+
       - name: Instantiate
         run: |
           julia --project=./ -e 'using Pkg; Pkg.instantiate()'
 
       - name: Run tests
-        run: julia --project=./ -e 'using Pkg; Pkg.test()'
+        run: |
+          julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector"; coverage=true)'
+          CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
