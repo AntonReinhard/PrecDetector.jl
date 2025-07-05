@@ -15,17 +15,25 @@
 
 # rounding (for floating point targets, do the rounding, but keep x and big separate and return a PrecCarrier again)
 @_unary_function round
-Base.round(T::Type, p::P) = round(T, p.x)
-Base.round(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(round(T, p.x), big(round(T, p.big)))
+Base.round(::Type{T}, p::P) where {T} = round(T, p.x)
+Base.round(::Type{T}, p::P) where {T <: Integer} = round(T, p.x) # necessary in 1.10
 @_unary_function floor
-Base.floor(T::Type, p::P) = floor(T, p.x)
-Base.floor(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(floor(T, p.x), big(floor(T, p.big)))
+Base.floor(::Type{T}, p::P) where {T} = floor(T, p.x)
+Base.floor(::Type{T}, p::P) where {T <: Integer} = floor(T, p.x)
 @_unary_function ceil
-Base.ceil(T::Type, p::P) = ceil(T, p.x)
-Base.ceil(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(ceil(T, p.x), big(ceil(T, p.big)))
+Base.ceil(::Type{T}, p::P) where {T} = ceil(T, p.x)
+Base.ceil(::Type{T}, p::P) where {T <: Integer} = ceil(T, p.x)
 @_unary_function trunc
-Base.trunc(T::Type, p::P) = trunc(T, p.x)
-Base.trunc(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(trunc(T, p.x), big(trunc(T, p.big)))
+Base.trunc(::Type{T}, p::P) where {T} = trunc(T, p.x)
+Base.trunc(::Type{T}, p::P) where {T <: Integer} = trunc(T, p.x)
+
+if (VERSION >= v"1.11")
+    # julia 1.10 does not overload these rounding functions for float targets
+    Base.round(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(round(T, p.x), big(round(T, p.big)))
+    Base.floor(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(floor(T, p.x), big(floor(T, p.big)))
+    Base.ceil(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(ceil(T, p.x), big(ceil(T, p.big)))
+    Base.trunc(::Type{T}, p::P) where {T <: AbstractFloat} = P{T}(trunc(T, p.x), big(trunc(T, p.big)))
+end
 
 Base.round(p::P, mode::RoundingMode) = round(p.x, mode)
 

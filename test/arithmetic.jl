@@ -57,18 +57,21 @@ BINARY_OPS = [
                 end
             end
 
-            @testset "round to $FLOAT_T" for FLOAT_T in [Float16, Float32, Float64]
-                @test isapprox(round(FLOAT_T, v), round(FLOAT_T, p)) || isnan(round(FLOAT_T, v)) && isnan(round(FLOAT_T, p))
-                @test typeof(round(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
 
-                @test isapprox(floor(FLOAT_T, v), floor(FLOAT_T, p)) || isnan(floor(FLOAT_T, v)) && isnan(floor(FLOAT_T, p))
-                @test typeof(floor(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+            if (VERSION >= v"1.11")
+                @testset "round to $FLOAT_T" for FLOAT_T in [Float16, Float32, Float64]
+                    @test isapprox(round(FLOAT_T, v), round(FLOAT_T, p)) || isnan(round(FLOAT_T, v)) && isnan(round(FLOAT_T, p))
+                    @test typeof(round(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
 
-                @test isapprox(ceil(FLOAT_T, v), ceil(FLOAT_T, p)) || isnan(ceil(FLOAT_T, v)) && isnan(ceil(FLOAT_T, p))
-                @test typeof(ceil(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test isapprox(floor(FLOAT_T, v), floor(FLOAT_T, p)) || isnan(floor(FLOAT_T, v)) && isnan(floor(FLOAT_T, p))
+                    @test typeof(floor(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
 
-                @test isapprox(trunc(FLOAT_T, v), trunc(FLOAT_T, p)) || isnan(trunc(FLOAT_T, v)) && isnan(trunc(FLOAT_T, p))
-                @test typeof(trunc(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test isapprox(ceil(FLOAT_T, v), ceil(FLOAT_T, p)) || isnan(ceil(FLOAT_T, v)) && isnan(ceil(FLOAT_T, p))
+                    @test typeof(ceil(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+
+                    @test isapprox(trunc(FLOAT_T, v), trunc(FLOAT_T, p)) || isnan(trunc(FLOAT_T, v)) && isnan(trunc(FLOAT_T, p))
+                    @test typeof(trunc(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                end
             end
         end
     end
