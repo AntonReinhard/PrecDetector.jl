@@ -38,12 +38,23 @@ mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
     big::BigFloat
 end
 
-PrecCarrier(x::T) where {T <: AbstractFloat} = PrecCarrier{T}(x, big(x))
-PrecCarrier(x::Integer) = PrecCarrier{Float64}(x, BigFloat(x))
-PrecCarrier(p::PrecCarrier) = PrecCarrier(p.x, p.big)
-PrecCarrier{T}(p::PrecCarrier{T}) where {T <: AbstractFloat} = PrecCarrier(p.x, p.big)
-function PrecCarrier{T}(x::T2) where {T <: AbstractFloat, T2 <: Real}
-    return PrecCarrier(T(x), big(T(x)))
-end
-
 const P = PrecCarrier
+
+# convert various <:Real types explicitly
+P{T}(x::AbstractFloat) where {T <: AbstractFloat} = P{T}(T(x), big(x))
+P{T}(x::Integer) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
+P{T}(x::AbstractIrrational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
+P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
+
+# cast other PrecCarrier
+P{T}(p::P) where {T <: AbstractFloat} = P{T}(p.x, p.big)
+P{T}(p::P{T}) where {T <: AbstractFloat} = P(p.x, p.big)
+
+# dispatch to default type Float64
+P(x::T) where {T <: Real} = P{Float64}(x)
+
+# dispatch to x type if its an AbstractFloat
+P(x::T) where {T <: AbstractFloat} = P{T}(x)
+
+# more specific dispatch to default type for rationals to remove ambiguous call
+P(x::Rational) = P{Float64}(x)

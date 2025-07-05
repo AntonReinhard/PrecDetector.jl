@@ -8,6 +8,8 @@ This is a package to find imprecisions in chains of arithmetic functions.
 
 This package provides a new type, `PrecCarrier{T}`, which holds both a standard floating point type, and an arbitrary precision `BigFloat`. Basic arithmetic, trigonometric, and comparison functions are overloaded for this type and always work on both the basic and the arbitrary precision type. When some computations have been done, the values may (or may not) diverge, and the extent of the accumulated precision loss can be evaluated.
 
+This is *not* a package to directly increase the precision of your calculations. It is only intended to find the issues. To improve precision, you can use higher precision types, use arbitrary precision packages, or rearrange terms to be more numerically stable.
+
 ## Usage
 
 A floating point number can simply be wrapped in the custom type by calling `precify` on it. This also works for tuples and arrays, and custom types if an implementation is provided for it. The resulting `PrecCarrier` object can then be used like any `AbstractFloat` type in most cases. Finally, with `significant_digits`, the number of remaining significant digits in the variable can be queried.

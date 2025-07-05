@@ -33,7 +33,7 @@ significant_digits(p)
 # of the intermediate values:
 
 f_improved(x, y) = sqrt(abs((x + y) * (x - y)))
-f_improved(precify(3.0 + 1.0e-7), precify(3.0))
+p = f_improved(precify(3.0 + 1.0e-7), precify(3.0))
 #
 significant_digits(p)
 
