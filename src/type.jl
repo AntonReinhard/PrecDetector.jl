@@ -56,6 +56,7 @@ P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
 P{T}(p::P) where {T <: AbstractFloat} = P{T}(p.x, p.big)
 P{T}(p::P{T}) where {T <: AbstractFloat} = P{T}(p.x, p.big)
 
+
 # dispatch to default type Float64
 P(x::T) where {T <: Real} = P{Float64}(x)
 

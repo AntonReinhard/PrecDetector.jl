@@ -1,0 +1,48 @@
+repos:
+  - repo: https://github.com/fredrikekre/runic-pre-commit
+    rev: v1.0.0
+    hooks:
+      - id: runic
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=5120']  # 5MB
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: trailing-whitespace
+        exclude: &exclude_txtfiles >-
+          (?x)^(
+              test/.*\.win|
+              test/.*\.amn|
+              test/.*\.mmn|
+              test/.*\.vmn|
+              test/.*\.eig|
+              test/.*\.chk.fmt|
+              test/.*\.nnkp|
+              test/.*\.wout|
+              test/.*_band.dat|
+              test/.*_band.kpt|
+              test/.*_band.labelinfo.dat|
+              test/.*_tb.dat|
+              test/.*_hr.dat|
+              test/.*_wsvec.dat|
+              test/.*\.xsf|
+              test/.*\.cube|
+              test/.*\.bxsf
+          )$
+      - id: mixed-line-ending
+        exclude: *exclude_txtfiles
+      - id: end-of-file-fixer
+        exclude: *exclude_txtfiles
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: [ --unsafe ]
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
