@@ -54,7 +54,7 @@ p = tan(p)
 
 significant_digits(p)
 
-# Finally, the precision carried can be reset using [`reset_eps!(p)`]:
+# Finally, the precision carried can be reset using [`reset_eps!`](@ref):
 
 reset_eps!(p)
 
