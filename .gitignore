@@ -5,3 +5,4 @@ docs/src/manual.ipynb
 docs/src/manual.md
 docs/src/example.ipynb
 docs/src/example.md
+*.cov
