@@ -96,10 +96,10 @@ end
     return p
 end
 @inline function reset_eps!(t::Tuple)
-    return reset_eps!.(T, t)
+    return reset_eps!.(t)
 end
 @inline function reset_eps!(t::AbstractArray)
-    return reset_eps!.(T, t)
+    return reset_eps!.(t)
 end
 
 """
