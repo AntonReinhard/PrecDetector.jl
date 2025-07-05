@@ -44,6 +44,11 @@ mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
     end
 end
 
+# allow inference of generic T from given value
+function PrecCarrier(x::T, b::BigFloat) where {T <: AbstractFloat}
+    return PrecCarrier{T}(x, b)
+end
+
 const P = PrecCarrier
 
 # convert various <:Real types explicitly
