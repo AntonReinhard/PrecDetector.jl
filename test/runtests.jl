@@ -8,12 +8,16 @@ end
     include("precify.jl")
 end
 
+@safetestset "inits" begin
+    include("init.jl")
+end
+
 @safetestset "comparisons" begin
     include("comparisons.jl")
 end
 
-@safetestset "inits" begin
-    include("init.jl")
+@safetestset "arithmetic" begin
+    include("arithmetic.jl")
 end
 
 @safetestset "utils" begin
