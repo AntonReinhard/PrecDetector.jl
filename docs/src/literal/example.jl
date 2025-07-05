@@ -1,13 +1,13 @@
 # # Usage Example
 
 # Suppose we have the problem of computing the square root of the positive difference of two squares,
-# x and y. The formula is simple: $$\sqrt{\left|x^2 - y^2\right|}$$. Let's write it in julia:
+# x and y. The formula is simple: $\sqrt{\left|x^2 - y^2\right|}$. Let's write it in julia:
 
 f(x, y) = sqrt(abs(x^2 - y^2))
 
 f(5, 4)
 
-# So far so good. Now what happens when $$x$$ and $$y$$ have almost equal values?
+# So far so good. Now what happens when $x$ and $y$ have almost equal values?
 
 f(3.0 + 1.0e-7, 3.0)
 
@@ -24,12 +24,12 @@ p = f(precify(3.0 + 1.0e-7), precify(3.0))
 significant_digits(p)
 
 # It looks like we lost about 5 significant digits! This happens because of the intermediate
-# results of $$x^2$$ and $$y^2$$ do not carry enough precision to accurately calculate their
+# results of $x^2$ and $y^2$ do not carry enough precision to accurately calculate their
 # difference. This is often called "catastrophic cancellation", because the two values are
 # almost equal, so many of the most-significant bits are "cancelled".
 
-# In this instance, we can resolve the problem for most cases by replacing $$x^2 - y^2$$
-# with its binomial representation $$(x + y) * (x - y)$$. This reduces the instability
+# In this instance, we can resolve the problem for most cases by replacing $x^2 - y^2$
+# with its binomial representation $(x + y) * (x - y)$. This reduces the instability
 # of the intermediate values:
 
 f_improved(x, y) = sqrt(abs((x + y) * (x - y)))

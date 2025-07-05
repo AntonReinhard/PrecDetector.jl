@@ -11,12 +11,12 @@ using Literate
 
 literate_paths = [
     (
-        Base.Filesystem.joinpath(project_path, "docs/src/manual.jl"),
-        Base.Filesystem.joinpath(project_path, "docs/src/"),
+        Base.Filesystem.joinpath(project_path, "docs/src/literal/manual.jl"),
+        Base.Filesystem.joinpath(project_path, "docs/src/literal"),
     ),
     (
-        Base.Filesystem.joinpath(project_path, "docs/src/example.jl"),
-        Base.Filesystem.joinpath(project_path, "docs/src/"),
+        Base.Filesystem.joinpath(project_path, "docs/src/literal/example.jl"),
+        Base.Filesystem.joinpath(project_path, "docs/src/literal"),
     ),
 ]
 
@@ -27,8 +27,8 @@ end
 
 pages = [
     "index.md",
-    "Manual" => "manual.md",
-    "Example" => "example.md",
+    "Manual" => "literal/manual.md",
+    "Example" => "literal/example.md",
     "Library" => ["Public" => "lib/public.md", "Internal" => "lib/internal.md"],
     "Contribution" => "contribution.md",
 ]
@@ -46,4 +46,4 @@ makedocs(;
     ),
     pages = pages,
 )
-deploydocs(; repo = "github.com/AntonReinhard/PrecDetector.jl.git", push_preview = false)
+deploydocs(; repo = "github.com/AntonReinhard/PrecDetector.jl.git")
