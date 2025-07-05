@@ -72,4 +72,11 @@ function Base.cis(p::T) where {T <: P}
     c_big = cis(p.big)
     return Complex{T}(T(real(c), real(c_big)), T(imag(c), imag(c_big)))
 end
-Base.sincos(p::P) = (sin(p), cos(p))
+function Base.sincos(p::P)
+    if !isfinite(p.x) && !isnan(p.x)
+        throw(DomainError(p.x, "sincos(x) is only defined for finite x."))
+    elseif !isfinite(p.big) && !isnan(p.big)
+        throw(DomainError(p.big, "sincos(x) is only defined for finite x."))
+    end
+    return (sin(p), cos(p))
+end

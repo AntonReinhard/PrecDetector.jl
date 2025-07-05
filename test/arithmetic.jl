@@ -44,6 +44,20 @@ BINARY_OPS = [
         end
     end
 
+    @testset "sincos" begin
+        for v in FLOAT_T.(TEST_VALUES)
+            p = P(v)
+
+            try
+                sincos(v)
+                @test isapprox(sincos(v)[1], sincos(p)[1]) || (isnan(sincos(v)[1]) && isnan(sincos(p)[1]))
+                @test isapprox(sincos(v)[2], sincos(p)[2]) || (isnan(sincos(v)[2]) && isnan(sincos(p)[2]))
+            catch e
+                @test_throws e sincos(p)
+            end
+        end
+    end
+
     @testset "rounding functions" begin
         for v in FLOAT_T.(TEST_VALUES)
             p = P(v)
