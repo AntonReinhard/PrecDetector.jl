@@ -1,6 +1,8 @@
 # PrecDetector.jl
 
+[![tests](https://github.com/AntonReinhard/PrecDetector.jl/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/AntonReinhard/PrecDetector.jl/actions/workflows/unit_tests.yml)
 [![docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://AntonReinhard.github.io/PrecDetector.jl/dev/)
+[![code style: runic](https://img.shields.io/badge/code_style-%E1%9A%B1%E1%9A%A2%E1%9A%BE%E1%9B%81%E1%9A%B2-black)](https://github.com/fredrikekre/Runic.jl)
 
 This is a package to find imprecisions in chains of arithmetic functions.
 
