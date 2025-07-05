@@ -58,5 +58,7 @@ FLOAT_TYPES = [Float16, Float32, Float64]
     @testset "_float_type" begin
         @test _float_type(PrecCarrier{F}) == F
         @test _float_type(precify(F, 1.0)) == F
+        @test _float_type(PrecCarrier) == Float64
+        @test eltype(precify(F, 1.0)) == F
     end
 end

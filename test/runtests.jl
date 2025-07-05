@@ -19,3 +19,7 @@ end
 @safetestset "utils" begin
     include("utils.jl")
 end
+
+@safetestset "random" begin
+    include("rand.jl")
+end

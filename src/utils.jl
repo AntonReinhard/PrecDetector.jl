@@ -110,3 +110,11 @@ Return the underlying float type of the [`PrecCarrier`](@ref).
 """
 _float_type(::P{T}) where {T} = T
 _float_type(::Type{P{T}}) where {T} = T
+_float_type(::Type{P}) = Float64
+
+"""
+    Base.eltype(::PrecCarrier)
+
+Return the internally carried floating point type.
+"""
+Base.eltype(p::P) = _float_type(p)
