@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    tags: "*"
+    tags: '*'
   pull_request:
 
 env:
@@ -12,7 +12,7 @@ env:
   JULIA_DEPOT_PATH: './.julia'
 
 jobs:
-  test:
+  test_110:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,31 @@ jobs:
       - name: Setup Julia environment
         uses: julia-actions/setup-julia@v2
         with:
-          version: "1.10"
+          version: '1.10'
+
+      - name: Add Julia cache
+        uses: julia-actions/cache@v2
+
+      - name: Instantiate
+        run: |
+          julia --project=./ -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Run tests
+        run: julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector")'
+
+  test_111:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Julia environment
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
 
       - name: Add Julia cache
         uses: julia-actions/cache@v2
@@ -37,3 +61,28 @@ jobs:
         run: |
           julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector"; coverage=true)'
           CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+
+  test_112:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Julia environment
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: 'pre'
+
+      - name: Add Julia cache
+        uses: julia-actions/cache@v2
+
+      - name: Instantiate
+        run: |
+          julia --project=./ -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Run tests
+        run: |
+          julia --project=./ -e 'using Pkg; Pkg.test("PrecDetector")'

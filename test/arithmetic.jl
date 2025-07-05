@@ -56,6 +56,8 @@ BINARY_OPS = [
                 @test_throws e sincos(p)
             end
         end
+
+        @test_throws DomainError(Inf, "sincos(x) is only defined for finite x.") sincos(PrecCarrier{FLOAT_T}(1.0, big(Inf)))
     end
 
     @testset "rounding functions" begin

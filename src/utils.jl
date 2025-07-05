@@ -5,13 +5,13 @@ Return the number of epsilons of relative difference between `p.big` and `p.x`.
 Returns -1 if the difference is infinite.
 """
 function _no_epsilons(p::P{T}) where {T <: AbstractFloat}
-    return if iszero(p.x)
+    return if iszero(p.x) # if only p.big is zero, epsilon is still well-defined
         iszero(p.big) ? 0 : -1
-    elseif isnan(p.x)
-        isnan(p.big) ? 0 : -1
-    elseif !isfinite(p.x)
-        if sign(p.x) == sign(p.big)
-            isfinite(p.big) ? -1 : 0
+    elseif isnan(p.x) || isnan(p.big)
+        isnan(p.x) && isnan(p.big) ? 0 : -1
+    elseif !isfinite(p.x) || !isfinite(p.big)
+        if !isfinite(p.x) && !isfinite(p.big)
+            sign(p.x) == sign(p.big) ? 0 : -1
         else
             -1
         end

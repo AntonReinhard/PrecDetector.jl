@@ -1,13 +1,15 @@
 function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
     no_ε = _no_epsilons(p)
 
-    color = if 0 <= no_ε < 10
+    color = if no_ε < 0
+        :magenta # includes no_ε == -1
+    elseif no_ε < 10
         :green
     elseif no_ε < 100
         :yellow
     elseif no_ε < 1000
         :red
-    else # includes no_ε == -1
+    else
         :magenta
     end
 
