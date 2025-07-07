@@ -125,6 +125,9 @@ Return the internally carried floating point type.
 Base.eltype(p::P) = _float_type(p)
 Base.eltype(T::Type{<:P}) = _float_type(T)
 
+function Base.promote_rule(::Type{P{T1}}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat}
+    return P{promote_type(T1, T2)}
+end
 function Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: Real, T2 <: AbstractFloat}
     return P{promote_type(T1, T2)}
 end
