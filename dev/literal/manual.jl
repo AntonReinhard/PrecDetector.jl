@@ -1,10 +1,10 @@
 # # Manual
 
-using PrecDetector
+using PrecisionCarriers
 
 # ## Precify
 
-# Create a [`PrecCarrier`](@ref) object from any floating point by using [`precify`](@ref):
+# Create a [`PrecisionCarrier`](@ref) object from any floating point by using [`precify`](@ref):
 
 p = precify(1.0)
 
@@ -31,7 +31,7 @@ struct A
     x::AbstractFloat
 end
 
-PrecDetector.precify(T::Type{<:PrecCarrier}, a::A) = A(precify(a.x))
+PrecisionCarriers.precify(T::Type{<:PrecisionCarrier}, a::A) = A(precify(a.x))
 
 precify(A(1.0))
 
