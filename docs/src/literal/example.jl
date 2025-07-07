@@ -16,9 +16,9 @@ f(3.0 + 1.0e-7, 3.0)
 f(big(3.0 + 1.0e-7), big(3.0))
 
 # Clearly, not all of the supposed ca. 15 digits that the `Float64` result carries are correct.
-# Let's see what `PrecDetector` says:
+# Let's see what `PrecisionCarriers` says:
 
-using PrecDetector
+using PrecisionCarriers
 p = f(precify(3.0 + 1.0e-7), precify(3.0))
 #
 significant_digits(p)

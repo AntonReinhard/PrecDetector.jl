@@ -1,5 +1,5 @@
 """
-    _no_epsilons(p::PrecCarrier{T})
+    _no_epsilons(p::PrecisionCarrier{T})
 
 Return the number of epsilons of relative difference between `p.big` and `p.x`.
 Returns -1 if the difference is infinite.
@@ -26,12 +26,12 @@ function _no_epsilons(p::P{T}) where {T <: AbstractFloat}
 end
 
 """
-    significant_digits(p::PrecCarrier{T})
+    significant_digits(p::PrecisionCarrier{T})
 
-Return the number of significant decimal digits currently carried by this [`PrecCarrier`](@ref).
+Return the number of significant decimal digits currently carried by this [`PrecisionCarrier`](@ref).
 
 ```jldoctest
-julia> using PrecDetector
+julia> using PrecisionCarriers
 
 julia> function unstable(x, N)
            y = abs(x)
@@ -59,13 +59,13 @@ function significant_digits(p::P{T}) where {T <: AbstractFloat}
 end
 
 """
-    reset_eps!(p::PrecCarrier{AbstractFloat})
+    reset_eps!(p::PrecisionCarrier{AbstractFloat})
 
 Reset the precision carrier to zero epsilons. Can be called on
-containers (`AbstractArray`s or `Tuple`s) to reset all underlying `PrecCarrier`s.
+containers (`AbstractArray`s or `Tuple`s) to reset all underlying `PrecisionCarrier`s.
 
 ```jldoctest
-julia> using PrecDetector
+julia> using PrecisionCarriers
 
 julia> function unstable(x, N)
            y = abs(x)
@@ -111,14 +111,14 @@ end
     _float_type(::P{T})
     _float_type(::Type{P{T}})
 
-Return the underlying float type of the [`PrecCarrier`](@ref).
+Return the underlying float type of the [`PrecisionCarrier`](@ref).
 """
 _float_type(::P{T}) where {T} = T
 _float_type(::Type{P{T}}) where {T} = T
 _float_type(::Type{P}) = Float64
 
 """
-    Base.eltype(::PrecCarrier)
+    Base.eltype(::PrecisionCarrier)
 
 Return the internally carried floating point type.
 """

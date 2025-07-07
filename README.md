@@ -1,24 +1,24 @@
-# PrecDetector.jl
+# PrecisionCarriers.jl
 
-[![tests](https://github.com/AntonReinhard/PrecDetector.jl/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/AntonReinhard/PrecDetector.jl/actions/workflows/unit_tests.yml)
-[![codecov](https://codecov.io/gh/AntonReinhard/PrecDetector.jl/graph/badge.svg?token=HUVC6SZC0R)](https://codecov.io/gh/AntonReinhard/PrecDetector.jl)
-[![docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://AntonReinhard.github.io/PrecDetector.jl/dev/)
+[![tests](https://github.com/AntonReinhard/PrecisionCarriers.jl/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/AntonReinhard/PrecisionCarriers.jl/actions/workflows/unit_tests.yml)
+[![codecov](https://codecov.io/gh/AntonReinhard/PrecisionCarriers.jl/graph/badge.svg?token=HUVC6SZC0R)](https://codecov.io/gh/AntonReinhard/PrecisionCarriers.jl)
+[![docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://AntonReinhard.github.io/PrecisionCarriers.jl/dev/)
 [![code style: runic](https://img.shields.io/badge/code_style-%E1%9A%B1%E1%9A%A2%E1%9A%BE%E1%9B%81%E1%9A%B2-black)](https://github.com/fredrikekre/Runic.jl)
 
 This is a package to find imprecisions in chains of arithmetic functions.
 
 ## How it Works
 
-This package provides a new type, `PrecCarrier{T}`, which holds both a standard floating point type, and an arbitrary precision `BigFloat`. Basic arithmetic, trigonometric, and comparison functions are overloaded for this type and always work on both the basic and the arbitrary precision type. When some computations have been done, the values may (or may not) diverge, and the extent of the accumulated precision loss can be evaluated.
+This package provides a new type, `PrecisionCarrier{T}`, which holds both a standard floating point type, and an arbitrary precision `BigFloat`. Basic arithmetic, trigonometric, and comparison functions are overloaded for this type and always work on both the basic and the arbitrary precision type. When some computations have been done, the values may (or may not) diverge, and the extent of the accumulated precision loss can be evaluated.
 
 This is *not* a package to directly increase the precision of your calculations. It is only intended to find the issues. To improve precision, you can use higher precision types, use arbitrary precision packages, or rearrange terms to be more numerically stable.
 
 ## Usage
 
-A floating point number can simply be wrapped in the custom type by calling `precify` on it. This also works for tuples and arrays, and custom types if an implementation is provided for it. The resulting `PrecCarrier` object can then be used like any `AbstractFloat` type in most cases. Finally, with `significant_digits`, the number of remaining significant digits in the variable can be queried.
+A floating point number can simply be wrapped in the custom type by calling `precify` on it. This also works for tuples and arrays, and custom types if an implementation is provided for it. The resulting `PrecisionCarrier` object can then be used like any `AbstractFloat` type in most cases. Finally, with `significant_digits`, the number of remaining significant digits in the variable can be queried.
 
 ```julia
-using PrecDetector
+using PrecisionCarriers
 
 # example function from Prof. Kahan: https://people.eecs.berkeley.edu/~wkahan/WrongR.pdf
 function unstable(x, N)

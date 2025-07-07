@@ -1,7 +1,7 @@
 # Internal functions and functionality
 
 ```@meta
-CurrentModule = PrecDetector
+CurrentModule = PrecisionCarriers
 ```
 ```@index
 Pages = ["internal.md"]

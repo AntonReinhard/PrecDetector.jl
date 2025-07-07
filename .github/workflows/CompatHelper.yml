@@ -8,7 +8,7 @@ permissions:
   pull-requests: write
 jobs:
   CompatHelper:
-    if: github.repository == 'AntonReinhard/PrecDetector.jl'
+    if: github.repository == 'AntonReinhard/PrecisionCarriers.jl'
     runs-on: ubuntu-latest
     steps:
       - name: Check if Julia is already available in the PATH

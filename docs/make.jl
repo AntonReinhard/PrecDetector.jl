@@ -1,5 +1,5 @@
 using Pkg
-using PrecDetector
+using PrecisionCarriers
 
 project_path = Base.Filesystem.joinpath(Base.Filesystem.dirname(Base.source_path()), "..")
 Pkg.develop(; path = project_path)
@@ -34,16 +34,16 @@ pages = [
 ]
 
 makedocs(;
-    modules = [PrecDetector],
+    modules = [PrecisionCarriers],
     checkdocs = :exports,
     authors = "Anton Reinhard",
-    repo = Documenter.Remotes.GitHub("AntonReinhard", "PrecDetector.jl"),
-    sitename = "PrecDetector.jl",
+    repo = Documenter.Remotes.GitHub("AntonReinhard", "PrecisionCarriers.jl"),
+    sitename = "PrecisionCarriers.jl",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://AntonReinhard.github.io/PrecDetector.jl",
+        canonical = "https://AntonReinhard.github.io/PrecisionCarriers.jl",
         assets = String[],
     ),
     pages = pages,
 )
-deploydocs(; repo = "github.com/AntonReinhard/PrecDetector.jl.git")
+deploydocs(; repo = "github.com/AntonReinhard/PrecisionCarriers.jl.git", push_preview = true)

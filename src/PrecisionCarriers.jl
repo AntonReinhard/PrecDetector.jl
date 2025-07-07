@@ -1,6 +1,6 @@
-module PrecDetector
+module PrecisionCarriers
 
-export PrecCarrier
+export PrecisionCarrier
 export precify
 export significant_digits
 export reset_eps!
@@ -17,4 +17,4 @@ include("functionality/init.jl")
 include("functionality/print.jl")
 include("functionality/random.jl")
 
-end # module PrecDetector
+end # module PrecisionCarriers
