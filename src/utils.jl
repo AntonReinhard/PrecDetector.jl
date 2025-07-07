@@ -116,8 +116,8 @@ Base.eltype(p::P{T}) where {T} = T
 Base.eltype(::Type{P{T}}) where {T} = T
 Base.eltype(::Type{P}) = Float64
 
-Base.promote_rule(T1::Type{P{<:AbstractFloat}}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, T2)}
-Base.promote_rule(T1::Type{<:AbstractFloat}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
-Base.promote_rule(T1::Type{<:Integer}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
-Base.promote_rule(T1::Type{<:Rational}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
-Base.promote_rule(T1::Type{Complex{<:AbstractFloat}}, T2::Type{P{<:AbstractFloat}}) = Complex{P{promote_type(eltype(T1), eltype(T2))}}
+Base.promote_rule(::Type{P{T1}}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
+Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
+Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: Integer, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
+Base.promote_rule(T::Type{Rational{T1}}, ::Type{P{T2}}) where {T1 <: Integer, T2 <: AbstractFloat} = P{promote_type(T, T2)}
+Base.promote_rule(::Type{Complex{T1}}, ::Type{P{T2}}) where {T1 <: Real, T2 <: AbstractFloat} = Complex{P{promote_type(T1, T2)}}
