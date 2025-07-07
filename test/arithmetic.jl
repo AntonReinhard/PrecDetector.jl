@@ -27,7 +27,7 @@ BINARY_OPS = [
 ]
 
 @testset "$P" for P in PREC_TYPES
-    FLOAT_T = PrecisionCarriers._float_type(P)
+    FLOAT_T = eltype(P)
 
     @testset "$op" for op in UNARY_OPS
         for v in FLOAT_T.(TEST_VALUES)

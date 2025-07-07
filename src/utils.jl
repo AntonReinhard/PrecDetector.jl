@@ -108,29 +108,16 @@ end
 end
 
 """
-    _float_type(::P{T})
-    _float_type(::Type{P{T}})
-
-Return the underlying float type of the [`PrecisionCarrier`](@ref).
-"""
-_float_type(::P{T}) where {T} = T
-_float_type(::Type{P{T}}) where {T} = T
-_float_type(::Type{P}) = Float64
-
-"""
     Base.eltype(::PrecisionCarrier)
 
 Return the internally carried floating point type.
 """
-Base.eltype(p::P) = _float_type(p)
-Base.eltype(T::Type{<:P}) = _float_type(T)
+Base.eltype(p::P{T}) where {T} = T
+Base.eltype(::Type{P{T}}) where {T} = T
+Base.eltype(::Type{P}) = Float64
 
-function Base.promote_rule(::Type{P{T1}}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat}
-    return P{promote_type(T1, T2)}
-end
-function Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: Real, T2 <: AbstractFloat}
-    return P{promote_type(T1, T2)}
-end
-function Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {TF, T1 <: Complex{TF}, T2 <: AbstractFloat}
-    return Complex{P{promote_type(TF, T2)}}
-end
+Base.promote_rule(T1::Type{P{<:AbstractFloat}}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, T2)}
+Base.promote_rule(T1::Type{<:AbstractFloat}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
+Base.promote_rule(T1::Type{<:Integer}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
+Base.promote_rule(T1::Type{<:Rational}, T2::Type{P{<:AbstractFloat}}) = P{promote_type(T1, eltype(T2))}
+Base.promote_rule(T1::Type{Complex{<:AbstractFloat}}, T2::Type{P{<:AbstractFloat}}) = Complex{P{promote_type(eltype(T1), eltype(T2))}}

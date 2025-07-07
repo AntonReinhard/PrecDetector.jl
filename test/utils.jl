@@ -1,4 +1,4 @@
-using PrecisionCarriers: _no_epsilons, _float_type
+using PrecisionCarriers: _no_epsilons
 
 FLOAT_TYPES = [Float16, Float32, Float64]
 
@@ -90,10 +90,9 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         end
     end
 
-    @testset "_float_type" begin
-        @test _float_type(PrecisionCarrier{F}) == F
-        @test _float_type(precify(F, 1.0)) == F
-        @test _float_type(PrecisionCarrier) == Float64
+    @testset "eltype" begin
+        @test eltype(PrecisionCarrier{F}) == F
         @test eltype(precify(F, 1.0)) == F
+        @test eltype(PrecisionCarrier) == Float64
     end
 end

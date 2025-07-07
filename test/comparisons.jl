@@ -11,7 +11,7 @@ TEST_VALUES = [
 ]
 
 @testset "$P" for P in PREC_TYPES
-    FLOAT_T = PrecisionCarriers._float_type(P)
+    FLOAT_T = eltype(P)
 
     @testset "unary comparisons" begin
         for v in FLOAT_T.(TEST_VALUES)
