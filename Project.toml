@@ -1,4 +1,4 @@
-name = "PrecDetector"
+name = "PrecisionCarriers"
 uuid = "5b00bbae-6f32-4368-a198-a7942af0a543"
 authors = ["Anton Reinhard <anton.reinhard@hzdr.de>"]
 version = "0.1.0"

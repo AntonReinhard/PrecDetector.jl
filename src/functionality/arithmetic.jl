@@ -13,7 +13,7 @@
 @_binary_function min
 @_binary_function max
 
-# rounding (for floating point targets, do the rounding, but keep x and big separate and return a PrecCarrier again)
+# rounding (for floating point targets, do the rounding, but keep x and big separate and return a PrecisionCarrier again)
 @_unary_function round
 Base.round(::Type{T}, p::P) where {T <: Integer} = round(T, p.x) # necessary in 1.10
 @_unary_function floor

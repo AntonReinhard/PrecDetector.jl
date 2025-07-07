@@ -3,7 +3,7 @@ using TestItems
 
 @run_package_tests
 
-@testitem "PrecCarrier conversions" begin
+@testitem "PrecisionCarrier conversions" begin
     include("conversions.jl")
 end
 

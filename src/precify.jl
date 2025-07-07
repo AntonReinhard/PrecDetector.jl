@@ -1,20 +1,20 @@
 """
-    precify([::Type{PrecCarrier{T}}], t::Any) where {T<:AbstractFloat}
+    precify([::Type{PrecisionCarrier{T}}], t::Any) where {T<:AbstractFloat}
     precify([::Type{T}], t::Any) where {T<:AbstractFloat}
 
-Convert a number or container to a container of [`PrecCarrier`](@ref)s. If no specific float type for the `PrecCarrier` is specified, the type of `t`s floats will be used.
+Convert a number or container to a container of [`PrecisionCarrier`](@ref)s. If no specific float type for the `PrecisionCarrier` is specified, the type of `t`s floats will be used.
 
 ```jldoctest
-julia> using PrecDetector
+julia> using PrecisionCarriers
 
 julia> precify((0, 1.0, 2.0f0))
 (0.0 <ε=0>, 1.0 <ε=0>, 2.0 <ε=0>)
 
 julia> typeof(ans)
-Tuple{PrecCarrier{Float64}, PrecCarrier{Float64}, PrecCarrier{Float32}}
+Tuple{PrecisionCarrier{Float64}, PrecisionCarrier{Float64}, PrecisionCarrier{Float32}}
 
-julia> precify(PrecCarrier{Float32}, [0, 1.0, 2.0f0])
-3-element Vector{PrecCarrier{Float32}}:
+julia> precify(PrecisionCarrier{Float32}, [0, 1.0, 2.0f0])
+3-element Vector{PrecisionCarrier{Float32}}:
  0.0 <ε=0>
  1.0 <ε=0>
  2.0 <ε=0>
@@ -27,7 +27,7 @@ julia> precify(PrecCarrier{Float32}, [0, 1.0, 2.0f0])
 # unimplemented throw to prevent infinite recursion (since P is also an AbstractFloat)
 @inline precify(T::Type{<:P}, t::Any) = throw("no precify is implemented for type $(typeof(t))")
 
-# convert PrecCarrier to PrecCarrier calls
+# convert PrecisionCarrier to PrecisionCarrier calls
 @inline precify(T::Type{<:P}, p::P) = T(p)
 
 # convert basic number types

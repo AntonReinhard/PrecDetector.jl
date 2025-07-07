@@ -1,4 +1,4 @@
-PREC_TYPES = [PrecCarrier{Float16}, PrecCarrier{Float32}, PrecCarrier{Float64}]
+PREC_TYPES = [PrecisionCarrier{Float16}, PrecisionCarrier{Float32}, PrecisionCarrier{Float64}]
 TEST_VALUES = [
     0.0,
     1.0,
@@ -27,7 +27,7 @@ BINARY_OPS = [
 ]
 
 @testset "$P" for P in PREC_TYPES
-    FLOAT_T = PrecDetector._float_type(P)
+    FLOAT_T = PrecisionCarriers._float_type(P)
 
     @testset "$op" for op in UNARY_OPS
         for v in FLOAT_T.(TEST_VALUES)
@@ -55,7 +55,7 @@ BINARY_OPS = [
             end
         end
 
-        @test_throws DomainError(Inf, "sincos(x) is only defined for finite x.") sincos(PrecCarrier{FLOAT_T}(1.0, big(Inf)))
+        @test_throws DomainError(Inf, "sincos(x) is only defined for finite x.") sincos(PrecisionCarrier{FLOAT_T}(1.0, big(Inf)))
     end
 
     @testset "rounding functions" begin
@@ -75,16 +75,16 @@ BINARY_OPS = [
             if (VERSION >= v"1.11")
                 @testset "round to $FLOAT_T" for FLOAT_T in [Float16, Float32, Float64]
                     @test isapprox(round(FLOAT_T, v), round(FLOAT_T, p)) || isnan(round(FLOAT_T, v)) && isnan(round(FLOAT_T, p))
-                    @test typeof(round(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test typeof(round(FLOAT_T, p)) == PrecisionCarrier{FLOAT_T}
 
                     @test isapprox(floor(FLOAT_T, v), floor(FLOAT_T, p)) || isnan(floor(FLOAT_T, v)) && isnan(floor(FLOAT_T, p))
-                    @test typeof(floor(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test typeof(floor(FLOAT_T, p)) == PrecisionCarrier{FLOAT_T}
 
                     @test isapprox(ceil(FLOAT_T, v), ceil(FLOAT_T, p)) || isnan(ceil(FLOAT_T, v)) && isnan(ceil(FLOAT_T, p))
-                    @test typeof(ceil(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test typeof(ceil(FLOAT_T, p)) == PrecisionCarrier{FLOAT_T}
 
                     @test isapprox(trunc(FLOAT_T, v), trunc(FLOAT_T, p)) || isnan(trunc(FLOAT_T, v)) && isnan(trunc(FLOAT_T, p))
-                    @test typeof(trunc(FLOAT_T, p)) == PrecCarrier{FLOAT_T}
+                    @test typeof(trunc(FLOAT_T, p)) == PrecisionCarrier{FLOAT_T}
                 end
             end
         end

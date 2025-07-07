@@ -6,7 +6,7 @@ Pages = ["public.md"]
 
 ## Types
 ```@docs
-PrecCarrier
+PrecisionCarrier
 ```
 
 ## Functions

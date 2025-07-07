@@ -1,14 +1,14 @@
 """
-    PrecCarrier{AbstractFloat}
+    PrecisionCarrier{AbstractFloat}
 
 A carrier type for floating points. Most math functions are overloaded
 for this type. Initialize it with some value (or see [`precify`](@ref)
-to convert an entire array or tuple type of numbers), do some arithemitc
+to convert an entire array or tuple type of numbers), do some arithmetic
 with your value(s), and finally, print it to check the number of accumulated
 epsilons of error.
 
 ```jldoctest
-julia> using PrecDetector
+julia> using PrecisionCarriers
 
 julia> function unstable(x, N)
            y = abs(x)
@@ -33,33 +33,33 @@ julia> unstable(precify(2), 128)
 
 ```
 """
-mutable struct PrecCarrier{T <: AbstractFloat} <: AbstractFloat
+mutable struct PrecisionCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
     big::BigFloat
 
     """
-        PrecCarrier{T}(x, b)
+        PrecisionCarrier{T}(x, b)
 
-    Construct a `PrecCarrier` directly from a float and a `BigFloat` value. The two
+    Construct a `PrecisionCarrier` directly from a float and a `BigFloat` value. The two
     values should be the same value, as far as precision allows.
 
     !!! warn
         This function should never be used by users. Instead, use [`precify`](@ref) or the
         various constructors from single arguments.
     """
-    function PrecCarrier{T}(x, b) where {T <: AbstractFloat}
-        @assert T != BigFloat "can not create a PrecCarrier with BigFloat"
-        @assert !(T <: PrecCarrier) "can not create a PrecCarrier with $T"
+    function PrecisionCarrier{T}(x, b) where {T <: AbstractFloat}
+        @assert T != BigFloat "can not create a PrecisionCarrier with BigFloat"
+        @assert !(T <: PrecisionCarrier) "can not create a PrecisionCarrier with $T"
         return new{T}(x, b)
     end
 end
 
 # allow inference of generic T from given value
-function PrecCarrier(x::T, b::BigFloat) where {T <: AbstractFloat}
-    return PrecCarrier{T}(x, b)
+function PrecisionCarrier(x::T, b::BigFloat) where {T <: AbstractFloat}
+    return PrecisionCarrier{T}(x, b)
 end
 
-const P = PrecCarrier
+const P = PrecisionCarrier
 
 # convert various <:Real types explicitly
 P{T}(x::AbstractFloat) where {T <: AbstractFloat} = P{T}(T(x), big(x))
@@ -67,7 +67,7 @@ P{T}(x::Integer) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
 P{T}(x::AbstractIrrational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
 P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
 
-# cast other PrecCarrier
+# cast other PrecisionCarrier
 P{T}(p::P) where {T <: AbstractFloat} = P{T}(p.x, p.big)
 P{T}(p::P{T}) where {T <: AbstractFloat} = P{T}(p.x, p.big)
 

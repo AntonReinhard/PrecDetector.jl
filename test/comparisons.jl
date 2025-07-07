@@ -1,4 +1,4 @@
-PREC_TYPES = [PrecCarrier{Float16}, PrecCarrier{Float32}, PrecCarrier{Float64}]
+PREC_TYPES = [PrecisionCarrier{Float16}, PrecisionCarrier{Float32}, PrecisionCarrier{Float64}]
 TEST_VALUES = [
     0.0,
     1.0,
@@ -11,7 +11,7 @@ TEST_VALUES = [
 ]
 
 @testset "$P" for P in PREC_TYPES
-    FLOAT_T = PrecDetector._float_type(P)
+    FLOAT_T = PrecisionCarriers._float_type(P)
 
     @testset "unary comparisons" begin
         for v in FLOAT_T.(TEST_VALUES)
@@ -41,7 +41,7 @@ TEST_VALUES = [
     @testset "binary comparisons" begin
         # ignore the fp16 subnormal number here, it leads to inequalities
         for x1 in TEST_VALUES[1:(end - 1)], x2 in TEST_VALUES[1:(end - 1)]
-            for (v1, v2) in [ # test interoperability with non PrecCarrier values
+            for (v1, v2) in [ # test interoperability with non PrecisionCarrier values
                     (FLOAT_T(x1), FLOAT_T(x2)),
                     (FLOAT_T(x1), x2),
                     (x1, FLOAT_T(x2)),
