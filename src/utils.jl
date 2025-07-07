@@ -123,3 +123,4 @@ _float_type(::Type{P}) = Float64
 Return the internally carried floating point type.
 """
 Base.eltype(p::P) = _float_type(p)
+Base.eltype(T::Type{<:P}) = _float_type(T)

@@ -29,5 +29,5 @@ function Base.:isapprox(p1::P, p2::Real; kwargs...)
     reality = isapprox(p1.x, p2; kwargs...)
     return reality
 end
-Base.eps(p::P{T}) where {T} = eps(p.x)
-Base.eps(p::Type{P{T}}) where {T} = eps(T)
+Base.eps(p::P{T}) where {T} = P(eps(p.x), big(eps(p.x)))
+Base.eps(p::Type{P{T}}) where {T} = P(eps(T), big(eps(T)))
