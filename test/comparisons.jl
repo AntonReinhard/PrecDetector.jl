@@ -11,7 +11,7 @@ TEST_VALUES = [
 ]
 
 @testset "$P" for P in PREC_TYPES
-    FLOAT_T = PrecisionCarriers._float_type(P)
+    FLOAT_T = eltype(P)
 
     @testset "unary comparisons" begin
         for v in FLOAT_T.(TEST_VALUES)
@@ -31,7 +31,7 @@ TEST_VALUES = [
 
             if (isnan(eps(v)))   # if eps(v) is NaN, eps(p) is NaN, and NaN != NaN
                 @test isnan(eps(p))
-                @test typeof(eps(p)) == FLOAT_T
+                @test typeof(eps(p)) == P
             else
                 @test eps(v) == eps(p)
             end

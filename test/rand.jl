@@ -6,7 +6,7 @@ RNG_F = MersenneTwister(1)
 RNG_P = MersenneTwister(1)
 
 @testset "random $P" for P in PREC_TYPES
-    F = PrecisionCarriers._float_type(P)
+    F = eltype(P)
 
     random_p = rand(RNG_P, P)
     @test isapprox(random_p, rand(RNG_F, F))

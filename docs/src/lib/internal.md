@@ -10,5 +10,4 @@ Pages = ["internal.md"]
 ## Functions
 ```@docs
 _no_epsilons
-_float_type
 ```
