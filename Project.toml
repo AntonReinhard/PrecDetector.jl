@@ -7,6 +7,10 @@ version = "0.1.2"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+QEDFeynmanDiagrams = "3232ad24-8ec1-4588-843e-e2ed2eae1ff3"
+QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
+QEDcore = "35dc0263-cb5f-4c33-a114-1d7f54ab753e"
+QEDprocesses = "46de9c38-1bb3-4547-a1ec-da24d767fdad"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [weakdeps]
