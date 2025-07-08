@@ -2,5 +2,7 @@
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 PrecisionCarriers = "5b00bbae-6f32-4368-a198-a7942af0a543"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

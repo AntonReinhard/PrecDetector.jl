@@ -79,5 +79,10 @@ SOURCE_VALUES = [
 
         @test typeof(pc) == PrecisionCarrier{F2}
         @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
+
+        # "constructor" call
+        pc = F2(p)
+        @test typeof(pc) == PrecisionCarrier{F2}
+        @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
     end
 end

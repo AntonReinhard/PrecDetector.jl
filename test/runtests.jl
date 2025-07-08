@@ -27,10 +27,14 @@ end
     include("utils.jl")
 end
 
+@testitem "printing" begin
+    include("print.jl")
+end
+
 @testitem "random" begin
     include("rand.jl")
 end
 
-@testitem "printing" begin
-    include("print.jl")
+@testitem "doublefloats" begin
+    include("doublefloats.jl")
 end
