@@ -15,6 +15,5 @@ include("functionality/compare.jl")
 include("functionality/conversion.jl")
 include("functionality/init.jl")
 include("functionality/print.jl")
-include("functionality/random.jl")
 
 end # module PrecisionCarriers
