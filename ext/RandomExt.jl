@@ -18,7 +18,6 @@ end
 function Random.rand(rng::AbstractRNG, ::Random.SamplerType{P{T}}) where {T <: AbstractFloat}
     return P(rand(rng, T))
 end
-Random.rand(rng::AbstractRNG, ::Random.SamplerType{P}) = P(rand(rng, Float64))
 
 # rand functions for arrays
 function Random.rand!(rng::AbstractRNG, dst::Array{P{T}}, ::Random.SamplerType{P{T}}) where {T <: AbstractFloat}
