@@ -29,6 +29,7 @@ pages = [
     "index.md",
     "Manual" => "literal/manual.md",
     "Example" => "literal/example.md",
+    "Extensions" => "extensions.md",
     "Library" => ["Public" => "lib/public.md", "Internal" => "lib/internal.md"],
     "Contribution" => "contribution.md",
 ]
