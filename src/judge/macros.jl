@@ -69,7 +69,7 @@ macro bench_epsilons(
             let
                 iter = PrecisionCarriers._grid_samples(($(ranges...),), $(kwargs[:samples]))
 
-                argument_types = eltype(iter)
+                argument_types = precify(eltype(iter))
                 res = EpsilonBenchmarkResult{argument_types}($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
 
                 sizehint!(res.epsilons, length(iter))

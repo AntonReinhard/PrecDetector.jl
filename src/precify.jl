@@ -39,3 +39,11 @@ julia> precify(PrecisionCarrier{Float32}, [0, 1.0, 2.0f0])
 # container broadcasts
 @inline precify(T::Type{<:P}, t::Tuple) = precify.(T, t)
 @inline precify(T::Type{<:P}, t::AbstractArray) = precify.(T, t)
+
+# precify types
+@inline precify(T::Type{<:P}) = T
+@inline precify(::Type{T}) where {T <: AbstractFloat} = P{T}
+
+# container type broadcasts
+@inline precify(::Type{T}) where {T <: Tuple} = Tuple{precify.(T.parameters)...}
+@inline precify(::Type{Array{T, N}}) where {T, N} = Array{precify(T), N}
