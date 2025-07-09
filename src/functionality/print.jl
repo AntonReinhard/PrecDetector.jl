@@ -1,9 +1,7 @@
 function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
-    no_ε = _no_epsilons(p)
+    no_ε = epsilons(p)
 
-    color = if no_ε < 0
-        :magenta # includes no_ε == -1
-    elseif no_ε < 10
+    color = if no_ε < 10
         :green
     elseif no_ε < 100
         :yellow
@@ -15,7 +13,7 @@ function Base.show(io::IO, p::P{T}) where {T <: AbstractFloat}
 
     print(io, "$(p.x) ")
 
-    if (no_ε < 0)
+    if (no_ε == typemax(Int64))
         printstyled(io, "<ε=Inf>"; color = color)
     else
         printstyled(io, "<ε=$no_ε>"; color = color)

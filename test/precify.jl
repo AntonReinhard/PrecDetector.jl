@@ -71,7 +71,7 @@ end
                 @test t == PrecisionCarrier{Float64}
             end
             if !(v isa CustomStruct)
-                @test all(PrecisionCarriers._no_epsilons.(precified) .== 0)
+                @test all(PrecisionCarriers.epsilons.(precified) .== 0)
             end
         end
     end
@@ -97,7 +97,7 @@ end
                 @test t == PrecisionCarrier{Float64}
             end
             if !(v isa CustomStruct)
-                @test all(PrecisionCarriers._no_epsilons.(precified) .== 0)
+                @test all(PrecisionCarriers.epsilons.(precified) .== 0)
             end
         end
     end

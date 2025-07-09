@@ -35,7 +35,7 @@ SOURCE_VALUES = [
         else
             @test t == PrecisionCarrier{Float64}
         end
-        @test PrecisionCarriers._no_epsilons(p) == 0
+        @test PrecisionCarriers.epsilons(p) == 0
     end
 
     @testset "default constructor" begin
@@ -48,19 +48,19 @@ SOURCE_VALUES = [
         else
             @test t == PrecisionCarrier{Float64}
         end
-        @test PrecisionCarriers._no_epsilons(p) == 0
+        @test PrecisionCarriers.epsilons(p) == 0
     end
 
     @testset "conversion to PrecisionCarrier{$F}" for F in FLOAT_TYPES
         p = convert(PrecisionCarrier{F}, v)
         @test typeof(p) == PrecisionCarrier{F}
-        @test PrecisionCarriers._no_epsilons(p) == 0
+        @test PrecisionCarriers.epsilons(p) == 0
     end
 
     @testset "typed constructor PrecisionCarrier{$F}" for F in FLOAT_TYPES
         p = PrecisionCarrier{F}(v)
         @test typeof(p) == PrecisionCarrier{F}
-        @test PrecisionCarriers._no_epsilons(p) == 0
+        @test PrecisionCarriers.epsilons(p) == 0
     end
 
     @testset "invalid conversion to PrecisionCarrier{$F}" for F in INVALID_FLOAT_TYPES

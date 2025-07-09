@@ -9,5 +9,4 @@ Pages = ["internal.md"]
 
 ## Functions
 ```@docs
-_no_epsilons
 ```
