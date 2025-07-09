@@ -3,8 +3,25 @@ abstract type SearchMethod end
 struct RandomSearch <: SearchMethod end
 struct EvenlySpaced <: SearchMethod end
 
+function _wrap_func_args!(args)
+    for i in eachindex(args)
+        println("$(args[i])")
+        println("$(typeof(args[i]))")
+        if typeof(args[i]) == Symbol
+            args[i] = Expr(:call, precify, args[i])  # escape non-symbol arguments
+        elseif typeof(args[i]) == Expr
+            if args[i].head == :tuple
+                _wrap_func_args!(args[i].args)
+            elseif args[i].head == :call
+                _wrap_func_args!(args[i].args[2:end])
+            end
+        end
+    end
+    return nothing
+end
+
 macro bench_epsilons(
-        call_expr,                      # the call
+        call_expr,
         args...
     )
     if !(call_expr.head == :call)
@@ -14,11 +31,7 @@ macro bench_epsilons(
     func = call_expr.args[1]                # original function
     func_args = call_expr.args[2:end]       # original arguments
 
-    for i in eachindex(func_args)
-        if typeof(func_args[i]) == Symbol
-            func_args[i] = Expr(:call, precify, func_args[i])  # escape non-symbol arguments
-        end
-    end
+    _wrap_func_args!(func_args)
 
     kwargs = Dict{Symbol, Any}()
 
@@ -70,7 +83,7 @@ macro bench_epsilons(
                 iter = PrecisionCarriers._grid_samples(($(ranges...),), $(kwargs[:samples]))
 
                 argument_types = precify(eltype(iter))
-                res = EpsilonBenchmarkResult{argument_types}($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
+                res = EpsilonBenchmarkResult($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
 
                 sizehint!(res.epsilons, length(iter))
                 c = 0
