@@ -8,7 +8,9 @@ struct TopKSortedList{K, V}
     entries::Vector{Tuple{K, V}}
 
     function TopKSortedList{K, V}(max_keys::Int) where {K, V}
-        return new{K, V}(max_keys, Tuple{K, V}[])
+        res = new{K, V}(max_keys, Tuple{K, V}[])
+        sizehint!(res.entries, max_keys)
+        return res
     end
 end
 

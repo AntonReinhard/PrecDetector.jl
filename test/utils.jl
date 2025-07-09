@@ -19,16 +19,16 @@ FLOAT_TYPES = [Float16, Float32, Float64]
 
         # test some edge cases
         @test epsilons(PrecisionCarrier{F}(0, big(0.0))) == 0
-        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == -1
-        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == -1
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == -1
-        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == -1
-        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == -1
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == -1
-        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == -1
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == -1
-        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == -1
-        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == -1
+        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == typemax(Int64)
     end
 
     @testset "significant_digits" begin

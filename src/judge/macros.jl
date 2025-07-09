@@ -5,8 +5,6 @@ struct EvenlySpaced <: SearchMethod end
 
 function _wrap_func_args!(args)
     for i in eachindex(args)
-        println("$(args[i])")
-        println("$(typeof(args[i]))")
         if typeof(args[i]) == Symbol
             args[i] = Expr(:call, precify, args[i])  # escape non-symbol arguments
         elseif typeof(args[i]) == Expr

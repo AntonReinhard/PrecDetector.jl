@@ -52,11 +52,11 @@ julia> significant_digits(ans)
 ```
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
-    epsilons = epsilons(p)
-    if (epsilons == typemax(Int64))
+    ε = epsilons(p)
+    if (ε == typemax(Int64))
         return 0.0
     end
-    sig_digits = -log10(eps(T) * (epsilons + 1))
+    sig_digits = -log10(eps(T) * (ε + 1))
     return sig_digits
 end
 

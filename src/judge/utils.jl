@@ -9,7 +9,7 @@ function _grid_samples(ranges::Tuple, n::Integer)
     # Determine how many points per dimension (uniform across all for now)
     k = floor(Int, n^(1 / m))  # approx. root to evenly distribute
 
-    # Create linspaces for each range
+    # Create linear ranges for each range
     axes = [range(lo, hi; length = k) for (lo, hi) in ranges]
 
     # Cartesian product of all axes
