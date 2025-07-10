@@ -3,7 +3,14 @@ const median_color = :blue
 const min_color = :green
 const max_color = :red
 
-function make_bins(vec::Vector{Int}, minval::Int, maxval::Int, meanval, medval, histogram_width::Int)
+function make_bins(
+        vec::Vector{Int64},
+        minval::Int64,
+        maxval::Int64,
+        meanval::AbstractFloat,
+        medval::AbstractFloat,
+        histogram_width::Int
+    )
     hist = fill(0, histogram_width)
 
     log_minval = log(minval)
@@ -62,7 +69,7 @@ function ascii_hist(io::IO, bins::Vector{Int}, mean_bin::Int, median_bin::Int)
     return nothing
 end
 
-function print_hist_info(io::IO, histogram_width::Int, minval::Int, maxval::Int)
+function print_hist_info(io::IO, histogram_width::Int, minval::Int64, maxval::Int64)
     # print left-most value
     minval_string = string("^ $minval ε")
     maxval_string = string("$maxval ε ^")

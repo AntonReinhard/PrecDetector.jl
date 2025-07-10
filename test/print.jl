@@ -78,19 +78,19 @@ FLOAT_TYPES = [Float16, Float32, Float64]
 
         p = PrecisionCarrier{F}(1.0, 0.0)
         print(buf, p)
-        @test String(take!(buf)) == "1.0 <ε=$(round(Int, 1 / eps(F)))>"
+        @test String(take!(buf)) == "1.0 <ε=$(round(Int64, 1 / eps(F)))>"
 
         p = PrecisionCarrier{F}(1.0, -0.0)
         print(buf, p)
-        @test String(take!(buf)) == "1.0 <ε=$(round(Int, 1 / eps(F)))>"
+        @test String(take!(buf)) == "1.0 <ε=$(round(Int64, 1 / eps(F)))>"
 
         p = PrecisionCarrier{F}(-1.0, 0.0)
         print(buf, p)
-        @test String(take!(buf)) == "-1.0 <ε=$(round(Int, 1 / eps(F)))>"
+        @test String(take!(buf)) == "-1.0 <ε=$(round(Int64, 1 / eps(F)))>"
 
         p = PrecisionCarrier{F}(-1.0, -0.0)
         print(buf, p)
-        @test String(take!(buf)) == "-1.0 <ε=$(round(Int, 1 / eps(F)))>"
+        @test String(take!(buf)) == "-1.0 <ε=$(round(Int64, 1 / eps(F)))>"
     end
 
     @testset "Other" begin
@@ -111,7 +111,7 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         @test String(take!(buf)) == "1.0 <ε=1500>"
 
         # overflow of ε
-        p = PrecisionCarrier{F}(1.0, 1.0 + big(typemax(Int)) * 2 * eps(F))
+        p = PrecisionCarrier{F}(1.0, 1.0 + big(typemax(Int64)) * 2 * eps(F))
         print(buf, p)
         @test String(take!(buf)) == "1.0 <ε=Inf>"
     end

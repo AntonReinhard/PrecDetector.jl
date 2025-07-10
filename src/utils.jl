@@ -1,28 +1,30 @@
 """
-    epsilons(p::PrecisionCarrier{T})
+    epsilons(p::PrecisionCarrier{T})::
 
-Return the number of epsilons of relative difference between `p.big` and `p.x`.
+Return the number of epsilons of relative difference between `p.big` and `p.x` as an
+`Int64` value.
 
 !!! note
-    Returns `IntMax` if the difference is infinite.
+    Returns `typemax(Int64)` if the difference is infinite, for example when the float
+    reports `Inf` and the `BigFloat` has a non-infinite value.
 """
-function epsilons(p::P{T}) where {T <: AbstractFloat}
+function epsilons(p::P{T})::Int64 where {T <: AbstractFloat}
     return if iszero(p.x) # if only p.big is zero, epsilon is still well-defined
-        iszero(p.big) ? 0 : typemax(Int)
+        iszero(p.big) ? 0 : typemax(Int64)
     elseif isnan(p.x) || isnan(p.big)
-        isnan(p.x) && isnan(p.big) ? 0 : typemax(Int)
+        isnan(p.x) && isnan(p.big) ? 0 : typemax(Int64)
     elseif !isfinite(p.x) || !isfinite(p.big)
         if !isfinite(p.x) && !isfinite(p.big)
-            sign(p.x) == sign(p.big) ? 0 : typemax(Int)
+            sign(p.x) == sign(p.big) ? 0 : typemax(Int64)
         else
-            typemax(Int)
+            typemax(Int64)
         end
     else
         no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(T))
-        if (no_eps > typemax(Int))
-            return typemax(Int)
+        if (no_eps > typemax(Int64))
+            return typemax(Int64)
         else
-            return round(Int, no_eps)
+            return round(Int64, no_eps)
         end
     end
 end
@@ -53,7 +55,7 @@ julia> significant_digits(ans)
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
     ε = epsilons(p)
-    if (ε == typemax(Int))
+    if (ε == typemax(Int64))
         return 0.0
     end
     sig_digits = -log10(eps(T) * (ε + 1))
