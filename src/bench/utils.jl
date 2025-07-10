@@ -24,7 +24,7 @@ function _grid_samples(ranges::Tuple, n::Integer)
 end
 
 _rand_from_range(range::Tuple) = (rand() * (range[2] - range[1])) + range[1]
-function _random_sample(ranges::Tuple, ::Int64)
+function _random_sample(ranges::Tuple, ::Integer)
     res = _rand_from_range.(ranges)
     return res
 end

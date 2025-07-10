@@ -8,21 +8,21 @@ Return the number of epsilons of relative difference between `p.big` and `p.x`.
 """
 function epsilons(p::P{T}) where {T <: AbstractFloat}
     return if iszero(p.x) # if only p.big is zero, epsilon is still well-defined
-        iszero(p.big) ? 0 : typemax(Int64)
+        iszero(p.big) ? 0 : typemax(Int)
     elseif isnan(p.x) || isnan(p.big)
-        isnan(p.x) && isnan(p.big) ? 0 : typemax(Int64)
+        isnan(p.x) && isnan(p.big) ? 0 : typemax(Int)
     elseif !isfinite(p.x) || !isfinite(p.big)
         if !isfinite(p.x) && !isfinite(p.big)
-            sign(p.x) == sign(p.big) ? 0 : typemax(Int64)
+            sign(p.x) == sign(p.big) ? 0 : typemax(Int)
         else
-            typemax(Int64)
+            typemax(Int)
         end
     else
         no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(T))
-        if (no_eps > typemax(Int64))
-            return typemax(Int64)
+        if (no_eps > typemax(Int))
+            return typemax(Int)
         else
-            return round(Int64, no_eps)
+            return round(Int, no_eps)
         end
     end
 end
@@ -53,7 +53,7 @@ julia> significant_digits(ans)
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
     ε = epsilons(p)
-    if (ε == typemax(Int64))
+    if (ε == typemax(Int))
         return 0.0
     end
     sig_digits = -log10(eps(T) * (ε + 1))

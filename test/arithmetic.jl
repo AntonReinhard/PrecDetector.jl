@@ -63,7 +63,7 @@ BINARY_OPS = [
             p = P(v)
 
             if isfinite(v) && !isnan(v)
-                @testset "round to $INT_T" for INT_T in [Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64]
+                @testset "round to $INT_T" for INT_T in [Int8, Int16, Int32, Int, UInt8, UInt16, UInt32, UInt]
                     @test round(INT_T, v) == round(INT_T, p)
                     @test floor(INT_T, v) == floor(INT_T, p)
                     @test ceil(INT_T, v) == ceil(INT_T, p)

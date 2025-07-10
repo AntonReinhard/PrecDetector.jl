@@ -9,7 +9,7 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         # As a user, do *not* use this constructor!
         p = PrecisionCarrier(one(F), big(1.0 + 1.0e-5))
 
-        @test epsilons(p) == round(Int64, 1.0e-5 / eps(F))
+        @test epsilons(p) == round(Int, 1.0e-5 / eps(F))
 
         @test epsilons(precify(F(Inf))) == 0
         @test epsilons(precify(F(-Inf))) == 0
@@ -17,16 +17,16 @@ FLOAT_TYPES = [Float16, Float32, Float64]
 
         # test some edge cases
         @test epsilons(PrecisionCarrier{F}(0, big(0.0))) == 0
-        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == typemax(Int)
+        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == typemax(Int)
     end
 
     @testset "significant_digits" begin
@@ -101,17 +101,17 @@ end
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T1, PrecisionCarrier{T2}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64]
+    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Int8, Int16, Int32, Int, UInt8, UInt16, UInt32, UInt]
         @test promote_type(T1, T2) <: AbstractFloat
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T2, PrecisionCarrier{T1}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Rational{Int8}, Rational{Int16}, Rational{Int32}, Rational{Int64}, Rational{UInt8}, Rational{UInt16}, Rational{UInt32}, Rational{UInt64}]
+    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Rational{Int8}, Rational{Int16}, Rational{Int32}, Rational{Int}, Rational{UInt8}, Rational{UInt16}, Rational{UInt32}, Rational{UInt}]
         @test promote_type(T1, T2) <: AbstractFloat
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T2, PrecisionCarrier{T1}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [ComplexF16, ComplexF32, ComplexF64, Complex{Int64}, Complex{Int8}, Complex{Int16}, Complex{Int32}, Complex{Int64}, Complex{UInt8}, Complex{UInt16}, Complex{UInt32}, Complex{UInt64}]
+    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [ComplexF16, ComplexF32, ComplexF64, Complex{Int}, Complex{Int8}, Complex{Int16}, Complex{Int32}, Complex{Int}, Complex{UInt8}, Complex{UInt16}, Complex{UInt32}, Complex{UInt}]
         @test promote_type(PrecisionCarrier{T1}, T2) == Complex{PrecisionCarrier{promote_type(T1, real(T2))}}
         @test promote_type(T2, PrecisionCarrier{T1}) == Complex{PrecisionCarrier{promote_type(T1, real(T2))}}
     end

@@ -39,28 +39,28 @@ end
 
 mutable struct EpsilonBenchmarkResult
     # list of all collected (non infinite) epsilons
-    epsilons::Vector{Int64}
+    epsilons::Vector{Int}
 
     # number of total samples collected
-    total_samples::Int64
+    total_samples::Int
 
     # descending list of the top worst epsilons together with the respective arguments
-    worst_arguments::TopKSortedList{Int64, Tuple}
+    worst_arguments::TopKSortedList{Int, Tuple}
 
     # the minimum epsilons of a result to be considered for the worst arguments list
-    epsilon_limit::Int64
+    epsilon_limit::Int
 
     # the call string of the function being benchmarked, with format specifiers to interpolate the values
     call_string::String
 
     # number of collected samples that gave infinite epsilons
-    no_inf_epsilons::Int64
+    no_inf_epsilons::Int
 
-    function EpsilonBenchmarkResult(call_string::AbstractString, epsilon_limit::Int64, max_values::Int64)
+    function EpsilonBenchmarkResult(call_string::AbstractString, epsilon_limit::Int, max_values::Int)
         return new(
-            Int64[],    # epsilons vector
+            Int[],    # epsilons vector
             0,          # total samples
-            TopKSortedList{Int64, Tuple}(max_values),   # top k worst arguments
+            TopKSortedList{Int, Tuple}(max_values),   # top k worst arguments
             epsilon_limit,  # limit for epsilons to be considered for worst arguments
             call_string,    # call string of the function call for printing
             0               # number of infinite epsilons
@@ -68,13 +68,13 @@ mutable struct EpsilonBenchmarkResult
     end
 end
 
-function Base.insert!(eps::EpsilonBenchmarkResult, key::Int64, value::Tuple)
+function Base.insert!(eps::EpsilonBenchmarkResult, key::Int, value::Tuple)
     eps.total_samples += 1
 
     if key >= eps.epsilon_limit
         insert!(eps.worst_arguments, key, value)
     end
-    if key != typemax(Int64)
+    if key != typemax(Int)
         push!(eps.epsilons, key)
     else
         eps.no_inf_epsilons += 1

@@ -3,7 +3,7 @@ const median_color = :blue
 const min_color = :green
 const max_color = :red
 
-function make_bins(vec::Vector{Int64}, minval::Int64, maxval::Int64, meanval, medval, histogram_width::Int64)
+function make_bins(vec::Vector{Int}, minval::Int, maxval::Int, meanval, medval, histogram_width::Int)
     hist = fill(0, histogram_width)
 
     log_minval = log(minval)
@@ -26,7 +26,7 @@ function make_bins(vec::Vector{Int64}, minval::Int64, maxval::Int64, meanval, me
 end
 
 # slightly adapted from BenchmarkTools.jl
-function ascii_hist(io::IO, bins::Vector{Int64}, mean_bin::Int64, median_bin::Int64)
+function ascii_hist(io::IO, bins::Vector{Int}, mean_bin::Int, median_bin::Int)
     height = 2
     hist_bars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
     if minimum(bins) == 0
@@ -62,7 +62,7 @@ function ascii_hist(io::IO, bins::Vector{Int64}, mean_bin::Int64, median_bin::In
     return nothing
 end
 
-function print_hist_info(io::IO, histogram_width::Int64, minval::Int64, maxval::Int64)
+function print_hist_info(io::IO, histogram_width::Int, minval::Int, maxval::Int)
     # print left-most value
     minval_string = string("^ $minval ε")
     maxval_string = string("$maxval ε ^")
