@@ -105,7 +105,7 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
         @printf(io, "  %-9s %s\n", cstr("samples with infinite ε:", :bold), string(bench_result.no_inf_epsilons))
     end
 
-    if (maxval != 0)
+    if (maxval >= 2)
         histogram_width = 60
         clamped_minval = max(1, minval)
         # print histogram only when there are any imprecisions
@@ -125,7 +125,7 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
         Printf.format(io, Printf.Format(bench_result.call_string), value...)
         print(io, " -> ")
         _print_colored_epsilon(io, key)
-        println("")
+        println(io, "")
     end
 
     return nothing

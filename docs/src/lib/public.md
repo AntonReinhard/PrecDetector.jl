@@ -9,6 +9,11 @@ Pages = ["public.md"]
 PrecisionCarrier
 ```
 
+## Macros
+```@docs
+@bench_epsilons
+```
+
 ## Functions
 ```@docs
 precify

@@ -1,63 +1,36 @@
-function _precify_args!(args, var_symbols)
-    for i in eachindex(args)
-        if typeof(args[i]) == Symbol
-            push!(var_symbols, args[i])   # save the vars, need the order for correct interpolation when printing the results
-            args[i] = Expr(:call, precify, args[i])  # precify non-symbol arguments
-        elseif typeof(args[i]) == Expr
-            if args[i].head == :tuple
-                _precify_args!(args[i].args, var_symbols)
-            elseif args[i].head == :call
-                args[i].args[1] = esc(args[i].args[1])
-                args[i].args[2:end] = _precify_args!(args[i].args[2:end], var_symbols)
-            elseif args[i].head == :$
-                args[i] = esc(args[i].args[1])
-            end
-        end
-    end
-    return args
-end
+"""
+    @bench_epsilons(call_expr, args...)
 
-function _build_function_call_string(func)
-    # for a given expression of the function call, build the call string
-    # such that the actually sampled values can be interpolated into it
-    # yielding a valid call
-    str = ""
-    if func isa Expr
-        if func.head == :call
-            str = string(func.args[1]) * "(" # function name
-            first = true
-            for arg in func.args[2:end]
-                if !first
-                    str *= ", "
-                end
-                str *= _build_function_call_string(arg)
-                first = false
-            end
-            str *= ")"
-        elseif func.head == :tuple # tuple expression
-            str = "("
-            c = 0
-            for arg in func.args
-                str *= _build_function_call_string(arg)
-                if c <= length(func.args) || (c == 1 == length(func.args))
-                    # handle commas for tuples
-                    str *= ", "
-                end
-                c += 1
-            end
-            str *= ")"
-        elseif func.head == :$ # escaped expression
-            str = string(func.args[1])
-        end
-    elseif func isa Symbol
-        str = string("precify(%s)")
-    else
-        str = string(func)
-    end
+Benchmark the epsilons of a given function call.
 
-    return str
-end
+The first argument should be a function call, with variables from local context interpolated, and
+arguments that should be sampled defined in a `ranges = begin ... end` block. In the `ranges` block,
+every variable must be assigned a `Tuple` of a lower and an upper bound for values that should be
+sampled.
 
+```@example
+using PrecisionCarriers
+
+foo(x, y) = sqrt(x^2 - y^2)
+
+@bench_epsilons foo(1.0, y) ranges = begin
+    y = (0.5, 1.0)
+end samples = 1000 epsilon_limit = 10
+```
+
+Returned is an object containing information about the benchmark results that can be displayed to
+a terminal similar to BenchmarkTools' `@benchmark`.
+
+Supported keyword arguments:
+- `search_method`: How the sampling should be done. Supported are:
+    - `:evenly_spaced`: Creates an evenly spaced grid across all ranges
+    - `:random_search`: Randomly samples points in the given ranges.
+    The default is `:evenly_spaced`.
+- `samples`: The number of samples taken. Default: 10000
+- `epsilon_limit`: Results with epsilons larger than this will be stored together with the arguments
+  that produced the imprecise result. Default: 1000
+- `keep_n_values`: Maximum number of imprecise results that will be stored.
+"""
 macro bench_epsilons(
         call_expr,
         args...
@@ -77,8 +50,8 @@ macro bench_epsilons(
 
     # default values
     kwargs[:search_method] = :evenly_spaced # how to search the space
-    kwargs[:epsilon_limit] = 1000           # the limit for imprecision in the results
     kwargs[:samples] = 10000                # how many samples are taken
+    kwargs[:epsilon_limit] = 1000           # the limit for imprecision in the results
     kwargs[:keep_n_values] = 5              # how many values with the worst imprecisions are kept
 
     kwargs[:ranges] = nothing               # the ranges expression

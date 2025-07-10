@@ -37,6 +37,10 @@ literate_paths = [
         Base.Filesystem.joinpath(project_path, "docs/src/literal/example.jl"),
         Base.Filesystem.joinpath(project_path, "docs/src/literal"),
     ),
+    (
+        Base.Filesystem.joinpath(project_path, "docs/src/literal/bench_epsilons.jl"),
+        Base.Filesystem.joinpath(project_path, "docs/src/literal"),
+    ),
 ]
 
 for (file, output_dir) in literate_paths
@@ -46,8 +50,9 @@ end
 
 pages = [
     "Index" => "index.md",
-    "Manual" => "literal/manual.md",
     "Example" => "literal/example.md",
+    "Benchmarking" => "literal/bench_epsilons.md",
+    "Manual" => "literal/manual.md",
     "Extensions" => "extensions.md",
     "Library" => ["Public" => "lib/public.md", "Internal" => "lib/internal.md"],
     "Contribution" => "contribution.md",
