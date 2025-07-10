@@ -20,7 +20,7 @@ function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
         # first index is the largest key
         if (key > lst.entries[i][1])
             insert!(lst.entries, i, (key, value))
-            i = lst.max_keys
+            i = lst.max_keys + 1
         end
         i += 1
     end
@@ -38,13 +38,22 @@ function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
 end
 
 mutable struct EpsilonBenchmarkResult
+    # list of all collected (non infinite) epsilons
     epsilons::Vector{Int64}
+
+    # number of total samples collected
     total_samples::Int64
+
+    # descending list of the top worst epsilons together with the respective arguments
     worst_arguments::TopKSortedList{Int64, Tuple}
 
+    # the minimum epsilons of a result to be considered for the worst arguments list
     epsilon_limit::Int64
+
+    # the name of the function being benchmarked
     function_name::String
 
+    # number of collected samples that gave infinite epsilons
     no_inf_epsilons::Int64
 
     function EpsilonBenchmarkResult(function_name::AbstractString, epsilon_limit::Int64, max_values::Int64)
@@ -69,78 +78,6 @@ function Base.insert!(eps::EpsilonBenchmarkResult, key::Int64, value::Tuple)
         push!(eps.epsilons, key)
     else
         eps.no_inf_epsilons += 1
-    end
-
-    return nothing
-end
-
-
-function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkResult)
-    v = bench_result.epsilons
-
-    if isempty(v)
-        print(io, "No samples were collected.")
-        return
-    end
-
-    # Summary statistics
-    minval = minimum(v)
-    maxval = maximum(v)
-    med = round(median(v); digits = 3)
-    meanval = round(mean(v); digits = 3)
-
-    # Color helper
-    function cstr(text, color)
-        return Base.text_colors[color] * text * Base.text_colors[:normal]
-    end
-
-    @printf(io, "  %-9s %s\n", cstr("samples: ", :cyan), cstr(string(bench_result.total_samples), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("minimum: ", :green), cstr(string(minval), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("median:  ", :blue), cstr(string(med), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("mean:    ", :magenta), cstr(string(meanval), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("maximum: ", :red), cstr(string(maxval), :bold))
-    if bench_result.no_inf_epsilons != 0
-        @printf(io, "  %-9s %s\n", cstr("samples with infinite ε:", :bold), string(bench_result.no_inf_epsilons))
-    end
-
-    if (isempty(bench_result.worst_arguments.entries))
-        @printf(io, "\n  %s\n", cstr(string("no imprecisions > $(bench_result.epsilon_limit)ε found"), :bold))
-        return nothing
-    end
-
-    @printf(io, "\n  %s:\n", cstr(string("largest imprecisions"), :bold))
-
-    function _print_helper(io, value)
-        first = true
-        for v in value
-            if (!first)
-                print(io, " ")
-            end
-            if v isa Tuple
-                print(io, "(")
-                _print_helper(io, v)
-                print(io, ")")
-            elseif v isa Vector # TODO: still won't work for matrices etc.
-                print(io, "[")
-                _print_helper(io, v)
-                print(io, "]")
-            elseif v isa PrecisionCarrier
-                print(io, "precify($(v.x))")
-            else
-                print(io, "$v")
-            end
-            print(io, ",")
-            first = false
-        end
-        return
-    end
-
-    for (key, value) in bench_result.worst_arguments.entries
-        print(io, "    $(bench_result.function_name)(")
-        _print_helper(io, value)
-        print(io, ") -> ")
-        _print_colored_epsilon(io, key)
-        println("")
     end
 
     return nothing

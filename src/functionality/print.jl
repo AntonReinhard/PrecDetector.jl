@@ -12,7 +12,7 @@ function _print_colored_epsilon(io::IO, ε::Int64)
     return if (ε == typemax(Int64))
         printstyled(io, "<ε=Inf>"; color = color)
     else
-        printstyled(io, "<ε=$no_ε>"; color = color)
+        printstyled(io, "<ε=$ε>"; color = color)
     end
 
 end

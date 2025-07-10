@@ -27,5 +27,6 @@ include("functionality/print.jl")
 include("judge/utils.jl")
 include("judge/result.jl")
 include("judge/macros.jl")
+include("judge/print.jl")
 
 end # module PrecisionCarriers

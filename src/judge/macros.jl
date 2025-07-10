@@ -52,7 +52,7 @@ macro bench_epsilons(
     kwargs[:search_method] = EvenlySpaced() # how to search the space
     kwargs[:epsilon_limit] = 1000           # the limit for imprecision in the results
     kwargs[:samples] = 10000                # how many samples are taken
-    kwargs[:keep_n_values] = 10             # how many values with the worst imprecisions are kept
+    kwargs[:keep_n_values] = 5              # how many values with the worst imprecisions are kept
 
     kwargs[:ranges] = nothing               # the ranges expression
 
@@ -88,9 +88,6 @@ macro bench_epsilons(
         range_expr = statement.args[2]
         @debug "$var = $range_expr"
         push!(variables, var)
-
-        println("ranges: $ranges")
-        println("dump: $(dump(ranges))")
         ranges = Expr(:tuple, ranges.args..., Expr(:tuple, range_expr.args[1], range_expr.args[2]))
     end
 
@@ -113,7 +110,7 @@ macro bench_epsilons(
                 return res
             end
         end
-        @info full_call
+        @debug full_call
         return full_call
     elseif kwargs[:search_method] == RandomSearch()
         throw("unimplemented")
