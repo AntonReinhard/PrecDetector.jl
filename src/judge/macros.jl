@@ -1,8 +1,3 @@
-abstract type SearchMethod end
-
-struct RandomSearch <: SearchMethod end
-struct EvenlySpaced <: SearchMethod end
-
 function _precify_args!(args)
     for i in eachindex(args)
         if typeof(args[i]) == Symbol
@@ -11,7 +6,10 @@ function _precify_args!(args)
             if args[i].head == :tuple
                 _precify_args!(args[i].args)
             elseif args[i].head == :call
-                _precify_args!(args[i].args[2:end])
+                args[i].args[1] = esc(args[i].args[1])
+                args[i].args[2:end] = _precify_args!(args[i].args[2:end])
+            elseif args[i].head == :$
+                args[i] = esc(args[i].args[1])
             end
         end
     end
@@ -26,7 +24,7 @@ function _escape_args!(args)
             if args[i].head == :tuple
                 _escape_args!(args[i].args)
             elseif args[i].head == :call
-                _escape_args!(args[i].args[2:end])
+                args[i].args[2:end] = _escape_args!(args[i].args[2:end])
             end
         end
     end
@@ -49,7 +47,7 @@ macro bench_epsilons(
     kwargs = Dict{Symbol, Any}()
 
     # default values
-    kwargs[:search_method] = EvenlySpaced() # how to search the space
+    kwargs[:search_method] = :evenly_spaced # how to search the space
     kwargs[:epsilon_limit] = 1000           # the limit for imprecision in the results
     kwargs[:samples] = 10000                # how many samples are taken
     kwargs[:keep_n_values] = 5              # how many values with the worst imprecisions are kept
@@ -62,7 +60,12 @@ macro bench_epsilons(
         if !haskey(kwargs, key)
             error("got unknown keyword $key")
         end
-        kwargs[key] = val
+        @debug "keyword argument $key = $val"
+        if (val isa QuoteNode)
+            kwargs[key] = val.value
+        else
+            kwargs[key] = val
+        end
     end
 
     if isnothing(kwargs[:ranges])
@@ -93,27 +96,47 @@ macro bench_epsilons(
 
     var_expr = Expr(:tuple, variables...)
 
-    if kwargs[:search_method] == EvenlySpaced()
+    # loop setup, independent of the search method
+    call_setup = quote
+        res = EpsilonBenchmarkResult($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
+        sizehint!(res.epsilons, length(iter))
+        c = 0
+        prog = Progress(length(iter); dt = 1.0)
+    end
+
+    # call of the function and result handling, independent of the search method
+    call_work = quote
+        next!(prog)
+        p = $(esc(func))($(func_args...))
+        insert!(res, epsilons(p), ($(func_args...),))
+    end
+
+    @debug "$(typeof(kwargs[:search_method]))"
+    if kwargs[:search_method] == :evenly_spaced
         full_call = quote
             let
                 iter = PrecisionCarriers._grid_samples(($(ranges)), $(kwargs[:samples]))
-                res = EpsilonBenchmarkResult($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
-
-                sizehint!(res.epsilons, length(iter))
-                c = 0
-                prog = Progress(length(iter); dt = 1.0)
+                $call_setup
                 for $var_expr in iter
-                    next!(prog)
-                    p = $(esc(func))($(func_args...))
-                    insert!(res, epsilons(p), ($(func_args...),))
+                    $call_work
                 end
                 return res
             end
         end
         @debug full_call
         return full_call
-    elseif kwargs[:search_method] == RandomSearch()
-        throw("unimplemented")
+    elseif kwargs[:search_method] == :random_search
+        full_call = quote
+            let
+                iter = PrecisionCarriers._random_samples(($(ranges)), $(kwargs[:samples]))
+                $call_setup
+                for $var_expr in iter
+                    $call_work
+                end
+                return res
+            end
+        end
+        return full_call
     end
 
     error("unknown search method $(kwargs[:search_method])")

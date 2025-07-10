@@ -1,3 +1,8 @@
+const mean_color = :magenta
+const median_color = :blue
+const min_color = :green
+const max_color = :red
+
 function _print_helper(io, value)
     first = true
     for v in value
@@ -23,25 +28,30 @@ function _print_helper(io, value)
     return
 end
 
-function make_bins(vec::Vector{Int64}, minval::Int64, maxval::Int64, histogram_width::Int64)
+function make_bins(vec::Vector{Int64}, minval::Int64, maxval::Int64, meanval, medval, histogram_width::Int64)
     hist = fill(0, histogram_width)
 
     log_minval = log(minval)
     log_maxval = log(maxval)
 
+    _getbin(val) = round(Int, ((log(val) - log_minval) / log_maxval) * (histogram_width - 1)) + 1
+
     for val in vec
         if val == 0
             continue
         end
-        unrounded = ((log(val) - log_minval) / log_maxval) * (histogram_width - 1)
-        hist_index = round(Int, unrounded) + 1
+        hist_index = _getbin(val)
         hist[hist_index] += 1
     end
-    return hist
+
+    mean_bin = iszero(meanval) ? -1 : _getbin(meanval)
+    median_bin = iszero(medval) ? -1 : _getbin(medval)
+
+    return hist, mean_bin, median_bin
 end
 
 # slightly adapted from BenchmarkTools.jl
-function ascii_hist(io::IO, bins::Vector{Int64})
+function ascii_hist(io::IO, bins::Vector{Int64}, mean_bin::Int64, median_bin::Int64)
     height = 2
     hist_bars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
     if minimum(bins) == 0
@@ -63,8 +73,14 @@ function ascii_hist(io::IO, bins::Vector{Int64})
 
     println(io)
     for row in eachrow(hist)
-        for c in row
-            print(io, c)
+        for c in eachindex(row)
+            if (c == mean_bin)
+                printstyled(io, row[c]; color = mean_color)
+            elseif (c == median_bin)
+                printstyled(io, row[c]; color = median_color)
+            else
+                print(io, row[c])
+            end
         end
         print(io, '\n')
     end
@@ -75,11 +91,15 @@ function print_hist_info(io::IO, histogram_width::Int64, minval::Int64, maxval::
     # print left-most value
     minval_string = string("^ $minval ε")
     maxval_string = string("$maxval ε ^")
-    spaces = max(0, (histogram_width - length(minval_string) - length(maxval_string)))
+    info_string = "log scale"
+    no_spaces = max(0, (histogram_width - length(minval_string) - length(maxval_string) - length(info_string)))
 
-    print(io, "$minval_string")
-    print(io, " "^spaces)
-    return println(io, "$maxval_string")
+    printstyled(io, "$minval_string"; color = min_color)
+    print(io, " "^(no_spaces ÷ 2))
+    printstyled(io, info_string; bold = true, underline = true)
+    print(io, " "^(no_spaces - no_spaces ÷ 2))
+
+    return printstyled(io, "$maxval_string\n"; color = max_color)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkResult)
@@ -102,26 +122,26 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
     end
 
     @printf(io, "  %-9s %s\n", cstr("samples: ", :cyan), cstr(string(bench_result.total_samples), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("minimum: ", :green), cstr(string(minval), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("median:  ", :blue), cstr(string(med), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("mean:    ", :magenta), cstr(string(meanval), :bold))
-    @printf(io, "  %-9s %s ε\n", cstr("maximum: ", :red), cstr(string(maxval), :bold))
+    @printf(io, "  %-9s %s ε\n", cstr("minimum: ", min_color), cstr(string(minval), :bold))
+    @printf(io, "  %-9s %s ε\n", cstr("median:  ", median_color), cstr(string(med), :bold))
+    @printf(io, "  %-9s %s ε\n", cstr("mean:    ", mean_color), cstr(string(meanval), :bold))
+    @printf(io, "  %-9s %s ε\n", cstr("maximum: ", max_color), cstr(string(maxval), :bold))
     if bench_result.no_inf_epsilons != 0
         @printf(io, "  %-9s %s\n", cstr("samples with infinite ε:", :bold), string(bench_result.no_inf_epsilons))
-    end
-
-    if (isempty(bench_result.worst_arguments.entries))
-        @printf(io, "\n  %s\n", cstr(string("no imprecisions > $(bench_result.epsilon_limit)ε found"), :bold))
-        return nothing
     end
 
     if (maxval != 0)
         histogram_width = 60
         clamped_minval = max(1, minval)
         # print histogram only when there are any imprecisions
-        bins = make_bins(v, clamped_minval, maxval, histogram_width)
-        ascii_hist(io, bins)
+        bins, mean_bin, median_bin = make_bins(v, clamped_minval, maxval, meanval, med, histogram_width)
+        ascii_hist(io, bins, mean_bin, median_bin)
         print_hist_info(io, histogram_width, clamped_minval, maxval)
+    end
+
+    if (isempty(bench_result.worst_arguments.entries))
+        @printf(io, "\n  %s\n", cstr(string("no imprecisions > $(bench_result.epsilon_limit)ε found"), :bold))
+        return nothing
     end
 
     @printf(io, "\n  %s:\n", cstr(string("largest imprecisions"), :bold))

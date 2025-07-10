@@ -15,3 +15,15 @@ function _grid_samples(ranges::Tuple, n::Integer)
     # Cartesian product of all axes
     return Iterators.product(axes...)
 end
+
+_rand_from_range(range::Tuple) = (rand() * (range[2] - range[1])) + range[1]
+function _random_sample(ranges::Tuple, ::Int64)
+    res = _rand_from_range.(ranges)
+    return res
+end
+
+function _random_samples(ranges::Tuple, n::Integer)
+    @debug "generating random samples from ranges: $ranges"
+    f = Base.Fix1(_random_sample, ranges)
+    return Iterators.map(f, 1:n)
+end
