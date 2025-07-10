@@ -24,9 +24,9 @@ include("functionality/conversion.jl")
 include("functionality/init.jl")
 include("functionality/print.jl")
 
-include("judge/utils.jl")
-include("judge/result.jl")
-include("judge/macros.jl")
-include("judge/print.jl")
+include("bench/utils.jl")
+include("bench/result.jl")
+include("bench/macros.jl")
+include("bench/print.jl")
 
 end # module PrecisionCarriers

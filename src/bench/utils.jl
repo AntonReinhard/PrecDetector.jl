@@ -81,12 +81,12 @@ function _build_function_call_string(func)
             str = "("
             c = 0
             for arg in func.args
+                c += 1
                 str *= _build_function_call_string(arg)
-                if c <= length(func.args) || (c == 1 == length(func.args))
+                if c < length(func.args) || (c == 1 == length(func.args))
                     # handle commas for tuples
                     str *= ", "
                 end
-                c += 1
             end
             str *= ")"
         elseif func.head == :$ # escaped expression
@@ -94,6 +94,10 @@ function _build_function_call_string(func)
         end
     elseif func isa Symbol
         str = string("precify(%s)")
+    elseif func isa String
+        str = "\"" * func * "\""
+    elseif func isa AbstractFloat
+        str = "$(typeof(func))(" * string(func) * ")"
     else
         str = string(func)
     end

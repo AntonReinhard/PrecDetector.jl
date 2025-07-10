@@ -1,5 +1,3 @@
-using PrecisionCarriers: epsilons
-
 FLOAT_TYPES = [Float16, Float32, Float64]
 
 @testset "float type $F" for F in FLOAT_TYPES
