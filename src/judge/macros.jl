@@ -3,19 +3,34 @@ abstract type SearchMethod end
 struct RandomSearch <: SearchMethod end
 struct EvenlySpaced <: SearchMethod end
 
-function _wrap_func_args!(args)
+function _precify_args!(args)
     for i in eachindex(args)
         if typeof(args[i]) == Symbol
-            args[i] = Expr(:call, precify, args[i])  # escape non-symbol arguments
+            args[i] = Expr(:call, precify, args[i])  # precify non-symbol arguments
         elseif typeof(args[i]) == Expr
             if args[i].head == :tuple
-                _wrap_func_args!(args[i].args)
+                _precify_args!(args[i].args)
             elseif args[i].head == :call
-                _wrap_func_args!(args[i].args[2:end])
+                _precify_args!(args[i].args[2:end])
             end
         end
     end
-    return nothing
+    return args
+end
+
+function _escape_args!(args)
+    for i in eachindex(args)
+        if typeof(args[i]) == Symbol
+            args[i] = esc(args[i])  # escape non-symbol arguments
+        elseif typeof(args[i]) == Expr
+            if args[i].head == :tuple
+                _escape_args!(args[i].args)
+            elseif args[i].head == :call
+                _escape_args!(args[i].args[2:end])
+            end
+        end
+    end
+    return args
 end
 
 macro bench_epsilons(
@@ -29,7 +44,7 @@ macro bench_epsilons(
     func = call_expr.args[1]                # original function
     func_args = call_expr.args[2:end]       # original arguments
 
-    _wrap_func_args!(func_args)
+    _precify_args!(func_args)
 
     kwargs = Dict{Symbol, Any}()
 
@@ -44,6 +59,9 @@ macro bench_epsilons(
     for arg in args
         key = arg.args[1]
         val = arg.args[2]
+        if !haskey(kwargs, key)
+            error("got unknown keyword $key")
+        end
         kwargs[key] = val
     end
 
@@ -57,7 +75,7 @@ macro bench_epsilons(
     end
 
     variables = Symbol[]
-    ranges = Tuple{AbstractFloat, AbstractFloat}[]
+    ranges = Expr(:tuple)
 
     for statement in range_block.args
         if statement isa LineNumberNode
@@ -70,7 +88,10 @@ macro bench_epsilons(
         range_expr = statement.args[2]
         @debug "$var = $range_expr"
         push!(variables, var)
-        push!(ranges, (range_expr.args[1], range_expr.args[2]))
+
+        println("ranges: $ranges")
+        println("dump: $(dump(ranges))")
+        ranges = Expr(:tuple, ranges.args..., Expr(:tuple, range_expr.args[1], range_expr.args[2]))
     end
 
     var_expr = Expr(:tuple, variables...)
@@ -78,9 +99,7 @@ macro bench_epsilons(
     if kwargs[:search_method] == EvenlySpaced()
         full_call = quote
             let
-                iter = PrecisionCarriers._grid_samples(($(ranges...),), $(kwargs[:samples]))
-
-                argument_types = precify(eltype(iter))
+                iter = PrecisionCarriers._grid_samples(($(ranges)), $(kwargs[:samples]))
                 res = EpsilonBenchmarkResult($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
 
                 sizehint!(res.epsilons, length(iter))
@@ -95,7 +114,7 @@ macro bench_epsilons(
                 return res
             end
         end
-        @debug full_call
+        @info full_call
         return full_call
     elseif kwargs[:search_method] == RandomSearch()
         throw("unimplemented")

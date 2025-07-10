@@ -16,7 +16,7 @@ end
 
 function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
     i = 1
-    while i < length(lst.entries)
+    while i <= length(lst.entries)
         # first index is the largest key
         if (key > lst.entries[i][1])
             insert!(lst.entries, i, (key, value))
@@ -25,7 +25,7 @@ function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
         i += 1
     end
 
-    if i < lst.max_keys
+    if i <= lst.max_keys
         insert!(lst.entries, i, (key, value))
     end
 
