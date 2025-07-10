@@ -50,19 +50,19 @@ mutable struct EpsilonBenchmarkResult
     # the minimum epsilons of a result to be considered for the worst arguments list
     epsilon_limit::Int64
 
-    # the name of the function being benchmarked
-    function_name::String
+    # the call string of the function being benchmarked, with format specifiers to interpolate the values
+    call_string::String
 
     # number of collected samples that gave infinite epsilons
     no_inf_epsilons::Int64
 
-    function EpsilonBenchmarkResult(function_name::AbstractString, epsilon_limit::Int64, max_values::Int64)
+    function EpsilonBenchmarkResult(call_string::AbstractString, epsilon_limit::Int64, max_values::Int64)
         return new(
             Int64[],    # epsilons vector
             0,          # total samples
             TopKSortedList{Int64, Tuple}(max_values),   # top k worst arguments
             epsilon_limit,  # limit for epsilons to be considered for worst arguments
-            function_name,  # name of the function call for printing
+            call_string,    # call string of the function call for printing
             0               # number of infinite epsilons
         )
     end

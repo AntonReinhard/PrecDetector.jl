@@ -49,3 +49,7 @@ This method, while helpful in many cases, is not universal and should be used wi
 - Even arbitrary precision has its limits. For the `unstable` function given above, at about `N=256`, even the `BigFloat` will become unstable and the program will incorrectly report perfect precision (because both the normal float and the big float are equally wrong). However, this should only happen in extreme cases where you are likely aware of this. A similar problem can occur for example when a subtraction should result in exactly 0, where in some cases, the basic float type correctly reports 0.0, but the `BigFloat` calculates some tiny number (like 1e-80). This leads to the `PrecisionCarrier` reporting `ε=Inf`, because the relative error between 0 and not 0 is always infinite.
 - `BigFloat` is not usable on GPUs.
 - The use of arbitrary precision adds considerable performance overhead.
+
+## License
+
+[MIT](LICENSE) © Anton Reinhard

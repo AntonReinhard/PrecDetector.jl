@@ -1,13 +1,14 @@
-function _precify_args!(args)
+function _precify_args!(args, var_symbols)
     for i in eachindex(args)
         if typeof(args[i]) == Symbol
+            push!(var_symbols, args[i])   # save the vars, need the order for correct interpolation when printing the results
             args[i] = Expr(:call, precify, args[i])  # precify non-symbol arguments
         elseif typeof(args[i]) == Expr
             if args[i].head == :tuple
-                _precify_args!(args[i].args)
+                _precify_args!(args[i].args, var_symbols)
             elseif args[i].head == :call
                 args[i].args[1] = esc(args[i].args[1])
-                args[i].args[2:end] = _precify_args!(args[i].args[2:end])
+                args[i].args[2:end] = _precify_args!(args[i].args[2:end], var_symbols)
             elseif args[i].head == :$
                 args[i] = esc(args[i].args[1])
             end
@@ -16,19 +17,45 @@ function _precify_args!(args)
     return args
 end
 
-function _escape_args!(args)
-    for i in eachindex(args)
-        if typeof(args[i]) == Symbol
-            args[i] = esc(args[i])  # escape non-symbol arguments
-        elseif typeof(args[i]) == Expr
-            if args[i].head == :tuple
-                _escape_args!(args[i].args)
-            elseif args[i].head == :call
-                args[i].args[2:end] = _escape_args!(args[i].args[2:end])
+function _build_function_call_string(func)
+    # for a given expression of the function call, build the call string
+    # such that the actually sampled values can be interpolated into it
+    # yielding a valid call
+    str = ""
+    if func isa Expr
+        if func.head == :call
+            str = string(func.args[1]) * "(" # function name
+            first = true
+            for arg in func.args[2:end]
+                if !first
+                    str *= ", "
+                end
+                str *= _build_function_call_string(arg)
+                first = false
             end
+            str *= ")"
+        elseif func.head == :tuple # tuple expression
+            str = "("
+            c = 0
+            for arg in func.args
+                str *= _build_function_call_string(arg)
+                if c <= length(func.args) || (c == 1 == length(func.args))
+                    # handle commas for tuples
+                    str *= ", "
+                end
+                c += 1
+            end
+            str *= ")"
+        elseif func.head == :$ # escaped expression
+            str = string(func.args[1])
         end
+    elseif func isa Symbol
+        str = string("precify(%s)")
+    else
+        str = string(func)
     end
-    return args
+
+    return str
 end
 
 macro bench_epsilons(
@@ -41,8 +68,10 @@ macro bench_epsilons(
 
     func = call_expr.args[1]                # original function
     func_args = call_expr.args[2:end]       # original arguments
+    func_call_string = _build_function_call_string(call_expr)
 
-    _precify_args!(func_args)
+    variables = Symbol[]
+    _precify_args!(func_args, variables)
 
     kwargs = Dict{Symbol, Any}()
 
@@ -77,8 +106,9 @@ macro bench_epsilons(
         error("ranges= must be assigned a begin...end block")
     end
 
-    variables = Symbol[]
     ranges = Expr(:tuple)
+    # i think this is evil
+    resize!(ranges.args, length(variables))
 
     for statement in range_block.args
         if statement isa LineNumberNode
@@ -90,15 +120,20 @@ macro bench_epsilons(
         var = statement.args[1]
         range_expr = statement.args[2]
         @debug "$var = $range_expr"
-        push!(variables, var)
-        ranges = Expr(:tuple, ranges.args..., Expr(:tuple, range_expr.args[1], range_expr.args[2]))
+        index = findfirst(x -> x == var, variables)
+        if (isnothing(index))
+            @warn "found range for unused variable $var in ranges block, ignoring"
+            continue
+        end
+
+        ranges.args[index] = Expr(:tuple, range_expr.args[1], range_expr.args[2])
     end
 
     var_expr = Expr(:tuple, variables...)
 
     # loop setup, independent of the search method
     call_setup = quote
-        res = EpsilonBenchmarkResult($(string(func)), $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
+        res = EpsilonBenchmarkResult($func_call_string, $(kwargs[:epsilon_limit]), $(kwargs[:keep_n_values]))
         sizehint!(res.epsilons, length(iter))
         c = 0
         prog = Progress(length(iter); dt = 1.0)
@@ -108,10 +143,10 @@ macro bench_epsilons(
     call_work = quote
         next!(prog)
         p = $(esc(func))($(func_args...))
-        insert!(res, epsilons(p), ($(func_args...),))
+        insert!(res, epsilons(p), $var_expr)
     end
 
-    @debug "$(typeof(kwargs[:search_method]))"
+    full_call = nothing
     if kwargs[:search_method] == :evenly_spaced
         full_call = quote
             let
@@ -123,8 +158,6 @@ macro bench_epsilons(
                 return res
             end
         end
-        @debug full_call
-        return full_call
     elseif kwargs[:search_method] == :random_search
         full_call = quote
             let
@@ -136,8 +169,9 @@ macro bench_epsilons(
                 return res
             end
         end
-        return full_call
+    else
+        error("unknown search method $(kwargs[:search_method])")
     end
-
-    error("unknown search method $(kwargs[:search_method])")
+    @debug full_call
+    return full_call
 end

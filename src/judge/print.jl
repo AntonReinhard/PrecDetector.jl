@@ -3,31 +3,6 @@ const median_color = :blue
 const min_color = :green
 const max_color = :red
 
-function _print_helper(io, value)
-    first = true
-    for v in value
-        if (!first)
-            print(io, " ")
-        end
-        if v isa Tuple
-            print(io, "(")
-            _print_helper(io, v)
-            print(io, ")")
-        elseif v isa Vector # TODO: still won't work for matrices etc.
-            print(io, "[")
-            _print_helper(io, v)
-            print(io, "]")
-        elseif v isa PrecisionCarrier
-            print(io, "precify($(v.x))")
-        else
-            print(io, "$v")
-        end
-        print(io, ",")
-        first = false
-    end
-    return
-end
-
 function make_bins(vec::Vector{Int64}, minval::Int64, maxval::Int64, meanval, medval, histogram_width::Int64)
     hist = fill(0, histogram_width)
 
@@ -147,9 +122,8 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
     @printf(io, "\n  %s:\n", cstr(string("largest imprecisions"), :bold))
 
     for (key, value) in bench_result.worst_arguments.entries
-        print(io, "    $(bench_result.function_name)(")
-        _print_helper(io, value)
-        print(io, ") -> ")
+        Printf.format(io, Printf.Format(bench_result.call_string), value...)
+        print(io, " -> ")
         _print_colored_epsilon(io, key)
         println("")
     end
