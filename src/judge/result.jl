@@ -37,23 +37,41 @@ function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
     return lst
 end
 
-struct EpsilonBenchmarkResult
+mutable struct EpsilonBenchmarkResult
     epsilons::Vector{Int64}
+    total_samples::Int64
     worst_arguments::TopKSortedList{Int64, Tuple}
 
     epsilon_limit::Int64
     function_name::String
 
+    no_inf_epsilons::Int64
+
     function EpsilonBenchmarkResult(function_name::AbstractString, epsilon_limit::Int64, max_values::Int64)
-        return new(Int64[], TopKSortedList{Int64, Tuple}(max_values), epsilon_limit, function_name)
+        return new(
+            Int64[],    # epsilons vector
+            0,          # total samples
+            TopKSortedList{Int64, Tuple}(max_values),   # top k worst arguments
+            epsilon_limit,  # limit for epsilons to be considered for worst arguments
+            function_name,  # name of the function call for printing
+            0               # number of infinite epsilons
+        )
     end
 end
 
 function Base.insert!(eps::EpsilonBenchmarkResult, key::Int64, value::Tuple)
+    eps.total_samples += 1
+
     if key >= eps.epsilon_limit
         insert!(eps.worst_arguments, key, value)
     end
-    return push!(eps.epsilons, key)
+    if key != typemax(Int64)
+        push!(eps.epsilons, key)
+    else
+        eps.no_inf_epsilons += 1
+    end
+
+    return nothing
 end
 
 
@@ -66,7 +84,6 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
     end
 
     # Summary statistics
-    n = length(v)
     minval = minimum(v)
     maxval = maximum(v)
     med = round(median(v); digits = 3)
@@ -77,11 +94,14 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
         return Base.text_colors[color] * text * Base.text_colors[:normal]
     end
 
-    @printf(io, "  %-9s %s\n", cstr("samples: ", :cyan), cstr(string(n), :bold))
+    @printf(io, "  %-9s %s\n", cstr("samples: ", :cyan), cstr(string(bench_result.total_samples), :bold))
     @printf(io, "  %-9s %s ε\n", cstr("minimum: ", :green), cstr(string(minval), :bold))
     @printf(io, "  %-9s %s ε\n", cstr("median:  ", :blue), cstr(string(med), :bold))
     @printf(io, "  %-9s %s ε\n", cstr("mean:    ", :magenta), cstr(string(meanval), :bold))
     @printf(io, "  %-9s %s ε\n", cstr("maximum: ", :red), cstr(string(maxval), :bold))
+    if bench_result.no_inf_epsilons != 0
+        @printf(io, "  %-9s %s\n", cstr("samples with infinite ε:", :bold), string(bench_result.no_inf_epsilons))
+    end
 
     if (isempty(bench_result.worst_arguments.entries))
         @printf(io, "\n  %s\n", cstr(string("no imprecisions > $(bench_result.epsilon_limit)ε found"), :bold))
@@ -118,7 +138,9 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
     for (key, value) in bench_result.worst_arguments.entries
         print(io, "    $(bench_result.function_name)(")
         _print_helper(io, value)
-        println(io, ") -> $key ε")
+        print(io, ") -> ")
+        _print_colored_epsilon(io, key)
+        println("")
     end
 
     return nothing

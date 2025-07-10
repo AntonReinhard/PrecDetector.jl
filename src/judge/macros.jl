@@ -108,8 +108,7 @@ macro bench_epsilons(
                 for $var_expr in iter
                     next!(prog)
                     p = $(esc(func))($(func_args...))
-                    epsi = epsilons(p)
-                    insert!(res, epsi, ($(func_args...),))
+                    insert!(res, epsilons(p), ($(func_args...),))
                 end
                 return res
             end
