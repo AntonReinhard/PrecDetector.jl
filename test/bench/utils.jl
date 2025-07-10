@@ -71,6 +71,12 @@ test_exprs = [
         Any["string", :(($precify)(var))],
         [:var],
     ),
+    (
+        Expr(:call, :bar, 1, :var),
+        "bar(1, precify(%s))",
+        Any[1, :(($precify)(var))],
+        [:var],
+    ),
 ]
 
 @testset "build function call string" begin
