@@ -1,6 +1,6 @@
 using Statistics
 
-using PrecisionCarriers: EpsT
+using PrecisionCarriers: EpsT, EpsMax
 
 @testset "make bins" begin
     using PrecisionCarriers: make_bins
@@ -40,4 +40,35 @@ end
 
     print_hist_info(buf, 50, EpsT(5), EpsT(9841))
     @test String(take!(buf)) == "^ 5 ε              log scale              9841 ε ^\n"
+end
+
+@testset "print bench result" begin
+    using PrecisionCarriers: EpsilonBenchmarkResult
+
+    res = EpsilonBenchmarkResult("f(precify(%s))", EpsT(10), 3)
+
+    buf = IOBuffer()
+    show(buf, MIME"text/plain"(), res)
+    @test String(take!(buf)) == "No samples were collected."
+
+    @test res.total_samples == 0
+    @test res.no_inf_epsilons == 0
+
+    insert!(res, EpsT(0), (0.0f0,))
+
+    @test res.total_samples == 1
+    @test res.no_inf_epsilons == 0
+    @test length(res.epsilons) == 1
+
+    insert!(res, EpsT(500), (1.0f0,))
+
+    @test res.total_samples == 2
+    @test res.no_inf_epsilons == 0
+    @test length(res.epsilons) == 2
+
+    insert!(res, EpsMax, (2.0f0,))
+
+    @test res.total_samples == 3
+    @test res.no_inf_epsilons == 1
+    @test length(res.epsilons) == 2  # infinite epsilons are not inserted
 end

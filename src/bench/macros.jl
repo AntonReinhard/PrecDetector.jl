@@ -35,7 +35,7 @@ macro bench_epsilons(
         call_expr,
         args...
     )
-    if !(call_expr.head == :call)
+    if !(call_expr isa Expr) || !(call_expr.head == :call)
         error("@bench_epsilons must be used with a function call as the first argument")
     end
 
@@ -71,7 +71,7 @@ macro bench_epsilons(
     end
 
     if isnothing(kwargs[:ranges])
-        error("@bench_epsilons requires the a `ranges = begin ... end` block")
+        error("@bench_epsilons requires a `ranges = begin ... end` block")
     end
 
     range_block = kwargs[:ranges]
@@ -87,7 +87,12 @@ macro bench_epsilons(
         if statement isa LineNumberNode
             continue  # Skip source line metadata
         end
-        if !(statement isa Expr && statement.head == :(=) && length(statement.args) == 2)
+        if !(statement isa Expr) ||
+                !(statement.head == :(=)) ||
+                !(length(statement.args) == 2) ||
+                !(statement.args[2] isa Expr) ||
+                !(statement.args[2].head == :tuple) ||
+                !(length(statement.args[2].args) == 2)
             error("each line in the ranges block must be an assignment like `x = (a, b)`, got $statement")
         end
         var = statement.args[1]

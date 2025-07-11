@@ -50,3 +50,7 @@ end
 @testitem "bench/topklist" begin
     include("bench/topklist.jl")
 end
+
+@testitem "bench/macros.jl" begin
+    include("bench/macros.jl")
+end

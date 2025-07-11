@@ -36,5 +36,4 @@ using PrecisionCarriers: EpsT
     @test list.entries[1] == (EpsT(10), (2.0, 0.0f0))
     @test list.entries[2] == (EpsT(5), (0.1, 0.2f0))
     @test list.entries[3] == (EpsT(3), (1.0, 0.0f0))
-
 end

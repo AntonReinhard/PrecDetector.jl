@@ -68,7 +68,7 @@ mutable struct EpsilonBenchmarkResult
         return new(
             Int[],    # epsilons vector
             0,          # total samples
-            TopKSortedList{Int, Tuple}(max_values),   # top k worst arguments
+            TopKSortedList{EpsT, Tuple}(max_values),   # top k worst arguments
             epsilon_limit,  # limit for epsilons to be considered for worst arguments
             call_string,    # call string of the function call for printing
             0               # number of infinite epsilons
