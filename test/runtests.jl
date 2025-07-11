@@ -42,3 +42,7 @@ end
 @testitem "bench/utils" begin
     include("bench/utils.jl")
 end
+
+@testitem "bench/print" begin
+    include("bench/print.jl")
+end

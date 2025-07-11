@@ -13,6 +13,9 @@ export reset_eps!
 
 export @bench_epsilons
 
+const EpsT = Int64
+const EpsMax = typemax(EpsT)
+
 include("type.jl")
 include("utils.jl")
 include("macros.jl")

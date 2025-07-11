@@ -3,18 +3,37 @@ const median_color = :blue
 const min_color = :green
 const max_color = :red
 
+"""
+    make_bins(
+        vec::Vector{EpsT},
+        min_val::EpsT,
+        max_val::EpsT,
+        mean_val::AbstractFloat,
+        median_val::AbstractFloat,
+        histogram_width::Int
+    )
+
+Helper function for printing [`EpsilonBenchmarkResult`](@ref). Returns a tuple
+`(hist, mean_bin, median_bin)`, where `hist` is a vector of length `histogram_width`.
+The elements represent the number of results (from the given `vec`) in the bin.
+`mean_bin` and `median_bin` contain the bins that the given `mean_val` and `median_val`
+fall in. `min_val` and `max_val` are used to scale the histogram appropriately.
+The histogram bins are sized logarithmically, which also means that 0 values are ignored.
+This function errors when the difference between `min_val` and `max_val` is 1 or less, or
+when `min_val` is 0 or less.
+"""
 function make_bins(
-        vec::Vector{Int64},
-        minval::Int64,
-        maxval::Int64,
-        meanval::AbstractFloat,
-        medval::AbstractFloat,
+        vec::Vector{EpsT},
+        min_val::EpsT,
+        max_val::EpsT,
+        mean_val::AbstractFloat,
+        median_val::AbstractFloat,
         histogram_width::Int
     )
     hist = fill(0, histogram_width)
 
-    log_minval = log(minval)
-    log_maxval = log(maxval)
+    log_minval = log(min_val)
+    log_maxval = log(max_val)
 
     _getbin(val) = round(Int, ((log(val) - log_minval) / log_maxval) * (histogram_width - 1)) + 1
 
@@ -26,13 +45,21 @@ function make_bins(
         hist[hist_index] += 1
     end
 
-    mean_bin = iszero(meanval) ? -1 : _getbin(meanval)
-    median_bin = iszero(medval) ? -1 : _getbin(medval)
+    mean_bin = iszero(mean_val) ? -1 : _getbin(mean_val)
+    median_bin = iszero(median_val) ? -1 : _getbin(median_val)
 
     return hist, mean_bin, median_bin
 end
 
-# slightly adapted from BenchmarkTools.jl
+"""
+    ascii_hist(io::IO, bins::Vector{Int}, mean_bin::Int, median_bin::Int)
+
+Prints the given histogram (`bins`) to the given `io`. The mean and median bins
+are colored in their respective colors.
+
+!!! note
+    The implementation is copied and slightly adapted from BenchmarkTools.jl.
+"""
 function ascii_hist(io::IO, bins::Vector{Int}, mean_bin::Int, median_bin::Int)
     height = 2
     hist_bars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
@@ -69,7 +96,13 @@ function ascii_hist(io::IO, bins::Vector{Int}, mean_bin::Int, median_bin::Int)
     return nothing
 end
 
-function print_hist_info(io::IO, histogram_width::Int, minval::Int64, maxval::Int64)
+"""
+    print_hist_info(io::IO, histogram_width::Int, minval::EpsT, maxval::EpsT)
+
+To be called after [`ascii_hist`](@ref). Prints a line below the histogram marking the
+minimum and maximum value.
+"""
+function print_hist_info(io::IO, histogram_width::Int, minval::EpsT, maxval::EpsT)
     # print left-most value
     minval_string = string("^ $minval ε")
     maxval_string = string("$maxval ε ^")
@@ -112,7 +145,7 @@ function Base.show(io::IO, ::MIME"text/plain", bench_result::EpsilonBenchmarkRes
         @printf(io, "  %-9s %s\n", cstr("samples with infinite ε:", :bold), string(bench_result.no_inf_epsilons))
     end
 
-    if (maxval >= 2)
+    if ((maxval - minval) >= 2)
         histogram_width = 60
         clamped_minval = max(1, minval)
         # print histogram only when there are any imprecisions

@@ -1,5 +1,7 @@
 FLOAT_TYPES = [Float16, Float32, Float64]
 
+using PrecisionCarriers: EpsMax, EpsT
+
 @testset "float type $F" for F in FLOAT_TYPES
     @testset "epsilons" begin
         p = one(PrecisionCarrier{F})
@@ -9,7 +11,7 @@ FLOAT_TYPES = [Float16, Float32, Float64]
         # As a user, do *not* use this constructor!
         p = PrecisionCarrier(one(F), big(1.0 + 1.0e-5))
 
-        @test epsilons(p) == round(Int64, 1.0e-5 / eps(F))
+        @test epsilons(p) == round(EpsT, 1.0e-5 / eps(F))
 
         @test epsilons(precify(F(Inf))) == 0
         @test epsilons(precify(F(-Inf))) == 0
@@ -17,16 +19,16 @@ FLOAT_TYPES = [Float16, Float32, Float64]
 
         # test some edge cases
         @test epsilons(PrecisionCarrier{F}(0, big(0.0))) == 0
-        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == typemax(Int64)
-        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == typemax(Int64)
+        @test epsilons(PrecisionCarrier{F}(0, big(1.0))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(Inf, big(1.0))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(1.0))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(NaN, big(1.0))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(Inf, big(-Inf))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(Inf))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(Inf, big(NaN))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(-Inf, big(NaN))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(NaN, big(Inf))) == EpsMax
+        @test epsilons(PrecisionCarrier{F}(NaN, big(-Inf))) == EpsMax
     end
 
     @testset "significant_digits" begin

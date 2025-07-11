@@ -37,26 +37,34 @@ function Base.insert!(lst::TopKSortedList{K, V}, key::K, value::V) where {K, V}
     return lst
 end
 
+"""
+    EpsilonBenchmarkResult
+
+Result object returned by the [`@bench_epsilons`](@ref) macro. When `display`ed, it prints
+a summary of the results, containing the minimum, median, mean, and maximum observed
+epsilons, and a terminal-styled histogram.
+
+## Fields:
+- `epsilons`: A vector of all non-infinite collected epsilon samples. Infinite epsilons are
+  excluded so that statistical measures do not get skewed.
+- `total_samples`: The total number of collected samples.
+- `worst_arguments`: Descending list of the top worst epsilons together with the respective
+  arguments. Helpful for closer inspection of precision problems.
+- `epsilon_limit`: The minimum number of epsilons a result must have to be considered for
+  the worst arguments list.
+- `call_string`: The call string of the function being benchmarked, with format specifiers
+  to string-interpolate the values.
+- `no_inf_epsilons`: Number of collected samples that gave infinite epsilons.
+"""
 mutable struct EpsilonBenchmarkResult
-    # list of all collected (non infinite) epsilons
-    epsilons::Vector{Int64}
-
-    # number of total samples collected
+    epsilons::Vector{EpsT}
     total_samples::Int
-
-    # descending list of the top worst epsilons together with the respective arguments
-    worst_arguments::TopKSortedList{Int64, Tuple}
-
-    # the minimum epsilons of a result to be considered for the worst arguments list
-    epsilon_limit::Int64
-
-    # the call string of the function being benchmarked, with format specifiers to interpolate the values
+    worst_arguments::TopKSortedList{EpsT, Tuple}
+    epsilon_limit::EpsT
     call_string::String
-
-    # number of collected samples that gave infinite epsilons
     no_inf_epsilons::Int
 
-    function EpsilonBenchmarkResult(call_string::AbstractString, epsilon_limit::Int64, max_values::Int)
+    function EpsilonBenchmarkResult(call_string::AbstractString, epsilon_limit::EpsT, max_values::Int)
         return new(
             Int[],    # epsilons vector
             0,          # total samples
@@ -68,13 +76,13 @@ mutable struct EpsilonBenchmarkResult
     end
 end
 
-function Base.insert!(eps::EpsilonBenchmarkResult, key::Int64, value::Tuple)
+function Base.insert!(eps::EpsilonBenchmarkResult, key::EpsT, value::Tuple)
     eps.total_samples += 1
 
     if key >= eps.epsilon_limit
         insert!(eps.worst_arguments, key, value)
     end
-    if key != typemax(Int64)
+    if key != EpsMax
         push!(eps.epsilons, key)
     else
         eps.no_inf_epsilons += 1
