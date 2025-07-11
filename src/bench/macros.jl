@@ -127,22 +127,22 @@ macro bench_epsilons(
     full_call = nothing
     if kwargs[:search_method] == :evenly_spaced
         full_call = quote
-            let
+            let # COV_EXCL_LINE
                 iter = PrecisionCarriers._grid_samples(($(ranges)), $(kwargs[:samples]))
-                $call_setup
+                $call_setup # COV_EXCL_LINE
                 for $var_expr in iter
-                    $call_work
+                    $call_work # COV_EXCL_LINE
                 end
                 return res
             end
         end
     elseif kwargs[:search_method] == :random_search
         full_call = quote
-            let
+            let # COV_EXCL_LINE
                 iter = PrecisionCarriers._random_samples(($(ranges)), $(kwargs[:samples]))
-                $call_setup
+                $call_setup # COV_EXCL_LINE
                 for $var_expr in iter
-                    $call_work
+                    $call_work # COV_EXCL_LINE
                 end
                 return res
             end

@@ -14,4 +14,14 @@ foo(x) = sqrt(tan(atan(x)))
     @test_throws ErrorException("each line in the ranges block must be an assignment like `x = (a, b)`, got x = 5.0") @macroexpand @bench_epsilons f(x) ranges = begin
         x = 5.0
     end
+
+    @test_throws ErrorException("unknown search method unknown") @macroexpand @bench_epsilons f(x) ranges = begin
+        x = (1.0, 5.0)
+    end search_method = :unknown
+
+    # should just print a warning
+    @macroexpand @bench_epsilons f(x) ranges = begin
+        x = (1.0, 5.0)
+        y = (5.0, 10.0)
+    end
 end

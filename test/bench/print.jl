@@ -71,4 +71,7 @@ end
     @test res.total_samples == 3
     @test res.no_inf_epsilons == 1
     @test length(res.epsilons) == 2  # infinite epsilons are not inserted
+
+    show(buf, MIME"text/plain"(), res)
+    @test String(take!(buf)) == "  \e[36msamples: \e[0m \e[1m3\e[0m\n  \e[32mminimum: \e[0m \e[1m0\e[0m ε\n  \e[34mmedian:  \e[0m \e[1m250.0\e[0m ε\n  \e[35mmean:    \e[0m \e[1m250.0\e[0m ε\n  \e[31mmaximum: \e[0m \e[1m500\e[0m ε\n  \e[1msamples with infinite ε:\e[0m 1\n\n                                                           █\n▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█\n^ 1 ε                   log scale                    500 ε ^\n\n  \e[1mlargest imprecisions\e[0m:\nf(precify(2.0)) -> <ε=Inf>\nf(precify(1.0)) -> <ε=500>\n"
 end
