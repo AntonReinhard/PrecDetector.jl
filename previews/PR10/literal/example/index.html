@@ -9,21 +9,22 @@ p = f_improved(precify(3.0 + 1.0e-7), precify(3.0))</code></pre><pre class="docu
 end search_method = :random_search</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
   <span class="sgr32">minimum: </span> <span class="sgr1">0</span> ε
   <span class="sgr34">median:  </span> <span class="sgr1">0.0</span> ε
-  <span class="sgr35">mean:    </span> <span class="sgr1">0.522</span> ε
-  <span class="sgr31">maximum: </span> <span class="sgr1">638</span> ε
+  <span class="sgr35">mean:    </span> <span class="sgr1">0.657</span> ε
+  <span class="sgr31">maximum: </span> <span class="sgr1">1751</span> ε
 
 █                                                           
-█▁▁▁▁▁▄▁▁▁▃▁▁▂▁▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▁▁▂▁▂▁▂▁▂▁▁▁▁▁▁▁▁▁▁▁▂
-<span class="sgr32">^ 1 ε</span>                   <span class="sgr4"><span class="sgr1">log scale</span></span>                    <span class="sgr31">638 ε ^</span>
+█▁▁▁▁▄▁▁▁▃▁▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▂▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂
+<span class="sgr32">^ 1 ε</span>                   <span class="sgr4"><span class="sgr1">log scale</span></span>                   <span class="sgr31">1751 ε ^</span>
 
-  <span class="sgr1">no imprecisions &gt; 1000ε found</span>
+  <span class="sgr1">largest imprecisions</span>:
+f(precify(4.2880762633222504), precify(4.288450610136623)) -&gt; <span class="sgr35">&lt;ε=1751&gt;</span>
 </code></pre><p>Compare this with the improved version:</p><pre><code class="language-julia hljs">@bench_epsilons f_improved(x, y) ranges = begin
     x = (0.0, 5.0)
     y = (0.0, 5.0)
 end search_method = :random_search</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
   <span class="sgr32">minimum: </span> <span class="sgr1">0</span> ε
   <span class="sgr34">median:  </span> <span class="sgr1">0.0</span> ε
-  <span class="sgr35">mean:    </span> <span class="sgr1">0.051</span> ε
+  <span class="sgr35">mean:    </span> <span class="sgr1">0.053</span> ε
   <span class="sgr31">maximum: </span> <span class="sgr1">1</span> ε
 
   <span class="sgr1">no imprecisions &gt; 1000ε found</span>
@@ -48,4 +49,4 @@ contour2 = contourf!(ax2, x, y, z2; levels = range(zmin, zmax))
 
 Colorbar(fig[1, 3], contour1; label = &quot;Significant Digits&quot;)
 
-fig</code></pre><img src="8a6778db.png" alt="Example block output"/><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Index</a><a class="docs-footer-nextpage" href="../bench_epsilons/">Benchmarking »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Friday 11 July 2025 12:50">Friday 11 July 2025</span>. Using Julia version 1.10.10.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+fig</code></pre><img src="8a6778db.png" alt="Example block output"/><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Index</a><a class="docs-footer-nextpage" href="../bench_epsilons/">Benchmarking »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Friday 11 July 2025 13:04">Friday 11 July 2025</span>. Using Julia version 1.10.10.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
