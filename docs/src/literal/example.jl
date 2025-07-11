@@ -37,7 +37,29 @@ p = f_improved(precify(3.0 + 1.0e-7), precify(3.0))
 #
 significant_digits(p)
 
-# We can now also easily visualize the precision loss of either version by plotting the
+# ## Benchmarking
+
+# The benchmarking macro [`@bench_epsilons`](@ref) is very helpful to see the precision loss
+# one can expect from a function at a glance:
+
+@bench_epsilons f(x, y) ranges = begin
+    x = (0.0, 5.0)
+    y = (0.0, 5.0)
+end search_method = :random_search
+
+# Compare this with the improved version:
+
+@bench_epsilons f_improved(x, y) ranges = begin
+    x = (0.0, 5.0)
+    y = (0.0, 5.0)
+end search_method = :random_search
+
+# For more information on the [`@bench_epsilons`](@ref) macro, please refer to its docstring or the
+# [tutorial](bench_epsilons.md).
+
+# ## Plotting
+
+# We can also easily visualize the precision loss of either version by plotting the
 # significant digits on an x-y-plane:
 
 using CairoMakie
@@ -54,8 +76,8 @@ fig = Figure()
 z1 = [significant_digits(f(precify(xi), precify(yi))) for yi in y, xi in x]
 z2 = [significant_digits(f_improved(precify(xi), precify(yi))) for yi in y, xi in x]
 
-zmin = floor(Int64, min(minimum(z1), minimum(z2)))
-zmax = ceil(Int64, max(maximum(z1), maximum(z2)))
+zmin = floor(Int, min(minimum(z1), minimum(z2)))
+zmax = ceil(Int, max(maximum(z1), maximum(z2)))
 
 ax1 = Axis(fig[1, 1]; aspect = AxisAspect(1), title = "Original f", xticksvisible = false, yticksvisible = false, xticklabelsvisible = false, yticklabelsvisible = false)
 ax2 = Axis(fig[1, 2]; aspect = AxisAspect(1), title = "Improved f", xticksvisible = false, yticksvisible = false, xticklabelsvisible = false, yticklabelsvisible = false)

@@ -9,9 +9,15 @@ Pages = ["public.md"]
 PrecisionCarrier
 ```
 
+## Macros
+```@docs
+@bench_epsilons
+```
+
 ## Functions
 ```@docs
 precify
+epsilons
 significant_digits
 reset_eps!
 Base.eltype

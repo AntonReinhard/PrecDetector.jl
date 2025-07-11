@@ -38,3 +38,19 @@ end
 @testitem "doublefloats" begin
     include("doublefloats.jl")
 end
+
+@testitem "bench/utils" begin
+    include("bench/utils.jl")
+end
+
+@testitem "bench/print" begin
+    include("bench/print.jl")
+end
+
+@testitem "bench/topklist" begin
+    include("bench/topklist.jl")
+end
+
+@testitem "bench/macros.jl" begin
+    include("bench/macros.jl")
+end

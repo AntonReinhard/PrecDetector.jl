@@ -46,6 +46,10 @@ reset_eps!(p)
 This method, while helpful in many cases, is not universal and should be used with care:
 - Some iterative methods (for a simple example, Newton's method) are not very reliant on high precision in every step, since they converge regardless of the precision of intermediate results. This can lead to something that looks like horrible precision loss, but is not actually relevant.
 - The given number of epsilons is *not* the same as an error of measurement. It should not be used for error bars or similar. It's rather a rough indicator of numerical noise, but for example it can statistically happen that imprecisions cancel each other for certain cases, but this does not indicate better stability.
-- Even arbitrary precision has its limits. For the `unstable` function given above, at about `N=256`, even the `BigFloat` will become unstable and the program will incorrectly report perfect precision (because both the normal float and the big float are equally wrong). However, this should only happen in extreme cases where you are likely aware of this.
+- Even arbitrary precision has its limits. For the `unstable` function given above, at about `N=256`, even the `BigFloat` will become unstable and the program will incorrectly report perfect precision (because both the normal float and the big float are equally wrong). However, this should only happen in extreme cases where you are likely aware of this. A similar problem can occur for example when a subtraction should result in exactly 0, where in some cases, the basic float type correctly reports 0.0, but the `BigFloat` calculates some tiny number (like 1e-80). This leads to the `PrecisionCarrier` reporting `ε=Inf`, because the relative error between 0 and not 0 is always infinite.
 - `BigFloat` is not usable on GPUs.
 - The use of arbitrary precision adds considerable performance overhead.
+
+## License
+
+[MIT](LICENSE) © Anton Reinhard

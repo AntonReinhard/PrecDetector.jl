@@ -71,7 +71,7 @@ end
                 @test t == PrecisionCarrier{Float64}
             end
             if !(v isa CustomStruct)
-                @test all(PrecisionCarriers._no_epsilons.(precified) .== 0)
+                @test all(PrecisionCarriers.epsilons.(precified) .== 0)
             end
         end
     end
@@ -97,10 +97,19 @@ end
                 @test t == PrecisionCarrier{Float64}
             end
             if !(v isa CustomStruct)
-                @test all(PrecisionCarriers._no_epsilons.(precified) .== 0)
+                @test all(PrecisionCarriers.epsilons.(precified) .== 0)
             end
         end
     end
+end
+
+@testset "precify type $FLOAT_T" for FLOAT_T in FLOAT_TYPES
+    @test precify(FLOAT_T) == PrecisionCarrier{FLOAT_T}
+    @test precify(Tuple{FLOAT_T, Float64}) == Tuple{PrecisionCarrier{FLOAT_T}, PrecisionCarrier{Float64}}
+    @test precify(Vector{FLOAT_T}) == Vector{PrecisionCarrier{FLOAT_T}}
+    @test precify(Array{FLOAT_T, 2}) == Array{PrecisionCarrier{FLOAT_T}, 2}
+    @test precify(Vector{Tuple{FLOAT_T, FLOAT_T}}) == Vector{Tuple{PrecisionCarrier{FLOAT_T}, PrecisionCarrier{FLOAT_T}}}
+    @test precify(PrecisionCarrier{FLOAT_T}) == PrecisionCarrier{FLOAT_T}
 end
 
 @testset "unimplemented precify" begin
