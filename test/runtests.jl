@@ -46,3 +46,7 @@ end
 @testitem "bench/print" begin
     include("bench/print.jl")
 end
+
+@testitem "bench/topklist" begin
+    include("bench/topklist.jl")
+end
