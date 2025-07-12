@@ -1,4 +1,5 @@
 FLOAT_TYPES = [Float16, Float32, Float64]
+EXT_FLOAT_TYPES = [Float16, Float32, Float64, BigFloat]
 
 using PrecisionCarriers: EpsMax, EpsT
 
@@ -98,22 +99,22 @@ using PrecisionCarriers: EpsMax, EpsT
 end
 
 @testset "type promotions" begin
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in FLOAT_TYPES
+    @testset "promotion with $T1 and $T2" for T1 in EXT_FLOAT_TYPES, T2 in EXT_FLOAT_TYPES
         @test promote_type(PrecisionCarrier{T1}, PrecisionCarrier{T2}) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T1, PrecisionCarrier{T2}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Int8, Int16, Int32, Int, UInt8, UInt16, UInt32, UInt]
+    @testset "promotion with $T1 and $T2" for T1 in EXT_FLOAT_TYPES, T2 in [Int8, Int16, Int32, Int, UInt8, UInt16, UInt32, UInt]
         @test promote_type(T1, T2) <: AbstractFloat
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T2, PrecisionCarrier{T1}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [Rational{Int8}, Rational{Int16}, Rational{Int32}, Rational{Int}, Rational{UInt8}, Rational{UInt16}, Rational{UInt32}, Rational{UInt}]
+    @testset "promotion with $T1 and $T2" for T1 in EXT_FLOAT_TYPES, T2 in [Rational{Int8}, Rational{Int16}, Rational{Int32}, Rational{Int}, Rational{UInt8}, Rational{UInt16}, Rational{UInt32}, Rational{UInt}]
         @test promote_type(T1, T2) <: AbstractFloat
         @test promote_type(PrecisionCarrier{T1}, T2) == PrecisionCarrier{promote_type(T1, T2)}
         @test promote_type(T2, PrecisionCarrier{T1}) == PrecisionCarrier{promote_type(T1, T2)}
     end
-    @testset "promotion with $T1 and $T2" for T1 in FLOAT_TYPES, T2 in [ComplexF16, ComplexF32, ComplexF64, Complex{Int}, Complex{Int8}, Complex{Int16}, Complex{Int32}, Complex{Int}, Complex{UInt8}, Complex{UInt16}, Complex{UInt32}, Complex{UInt}]
+    @testset "promotion with $T1 and $T2" for T1 in EXT_FLOAT_TYPES, T2 in [ComplexF16, ComplexF32, ComplexF64, Complex{Int}, Complex{Int8}, Complex{Int16}, Complex{Int32}, Complex{Int}, Complex{UInt8}, Complex{UInt16}, Complex{UInt32}, Complex{UInt}]
         @test promote_type(PrecisionCarrier{T1}, T2) == Complex{PrecisionCarrier{promote_type(T1, real(T2))}}
         @test promote_type(T2, PrecisionCarrier{T1}) == Complex{PrecisionCarrier{promote_type(T1, real(T2))}}
     end
