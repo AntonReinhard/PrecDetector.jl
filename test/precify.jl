@@ -19,7 +19,7 @@ INVALID_FLOAT_TYPES = [
     PrecisionCarrier{Float32},
     PrecisionCarrier{Float64},
 ]
-SOURCE_VALUES = [
+SOURCE_VALUES = Any[
     Float16(1.0),
     Float32(1.0),
     Float64(1.0),
@@ -36,6 +36,7 @@ SOURCE_VALUES = [
     PrecisionCarrier{Float16}(1.0),
     PrecisionCarrier{Float32}(1.0),
     PrecisionCarrier{Float64}(1.0),
+    big(1.0),
     CustomStruct(Float64(1.0), Float32(2.0), [Float16(3.0), Float16(4.0)], (5.0, 6.0)),
 ]
 
