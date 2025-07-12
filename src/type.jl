@@ -32,6 +32,12 @@ julia> unstable(precify(2), 128)
 1.0 <ε=4503599627370496>
 
 ```
+
+!!! note
+    A precision carrier of `BigFloat` is allowed, but is mostly useful for functions
+    that only use it intermediately. Using a carrier of `BigFloat` as input for a
+    function will simply result in always 0 ε error reported. Also note that in this case,
+    [`epsilons`](@ref) is not implemented, because `BigFloat` does not have a type epsilon.
 """
 mutable struct PrecisionCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
@@ -48,7 +54,6 @@ mutable struct PrecisionCarrier{T <: AbstractFloat} <: AbstractFloat
         various constructors from single arguments.
     """
     function PrecisionCarrier{T}(x, b) where {T <: AbstractFloat}
-        @assert T != BigFloat "can not create a PrecisionCarrier with BigFloat"
         @assert !(T <: PrecisionCarrier) "can not create a PrecisionCarrier with $T"
         return new{T}(x, b)
     end

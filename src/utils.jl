@@ -1,3 +1,12 @@
+# constant value for _special_eps to return when there are no special values
+const _NORM_EPS::Int = 0
+
+# constant value for _special_eps to return when the epsilon is infinite
+const _INF_EPS::Int = 1
+
+# constant value for _special_eps to return when the epsilon is zero
+const _ZERO_EPS::Int = 2
+
 """
     epsilons(p::PrecisionCarrier{T})::
 
@@ -9,18 +18,13 @@ Return the number of epsilons of relative difference between `p.big` and `p.x` a
     the float reports `Inf` and the `BigFloat` has a non-infinite value.
 """
 function epsilons(p::P{T})::EpsT where {T <: AbstractFloat}
-    return if iszero(p.x) # if only p.big is zero, epsilon is still well-defined
-        iszero(p.big) ? 0 : EpsMax
-    elseif isnan(p.x) || isnan(p.big)
-        isnan(p.x) && isnan(p.big) ? 0 : EpsMax
-    elseif !isfinite(p.x) || !isfinite(p.big)
-        if !isfinite(p.x) && !isfinite(p.big)
-            sign(p.x) == sign(p.big) ? 0 : EpsMax
-        else
-            EpsMax
-        end
+    special_eps = _special_epsilon(p)
+    if special_eps == _ZERO_EPS
+        return zero(EpsT)
+    elseif special_eps == _INF_EPS
+        return EpsMax
     else
-        no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(T))
+        no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(one(p.x)))
         if (no_eps > EpsMax)
             return EpsMax
         else
@@ -50,16 +54,25 @@ julia> unstable(precify(0.5), 30)
 0.4999999971854335 <ε=25351362>
 
 julia> significant_digits(ans)
-8.249558460661778
+8.249558483913594
 ```
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
-    ε = epsilons(p)
-    if (ε == EpsMax)
+    special_eps = _special_epsilon(p)
+    if special_eps == _ZERO_EPS
+        # arguable if this is correct, considering subnormal numbers do funky things
+        # with the machine epsilon
+        return -log10(eps(one(p.x)))
+    elseif special_eps == _INF_EPS
         return 0.0
+    else
+        relative_diff = abs(p.big / p.x - one(BigFloat))
+        if iszero(relative_diff)
+            # return maximum number of digits carried by the type
+            relative_diff = eps(p.x)
+        end
+        return Float64(-log10(relative_diff))
     end
-    sig_digits = -log10(eps(T) * (ε + 1))
-    return sig_digits
 end
 
 """
@@ -123,5 +136,35 @@ Base.eltype(::Type{P}) = Float64
 Base.promote_rule(::Type{P{T1}}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
 Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: AbstractFloat, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
 Base.promote_rule(::Type{T1}, ::Type{P{T2}}) where {T1 <: Integer, T2 <: AbstractFloat} = P{promote_type(T1, T2)}
+Base.promote_rule(T1::Type{BigFloat}, ::Type{P{T2}}) where {T2 <: AbstractFloat} = P{promote_type(T1, T2)}
 Base.promote_rule(T::Type{Rational{T1}}, ::Type{P{T2}}) where {T1 <: Integer, T2 <: AbstractFloat} = P{promote_type(T, T2)}
 Base.promote_rule(::Type{Complex{T1}}, ::Type{P{T2}}) where {T1 <: Real, T2 <: AbstractFloat} = Complex{P{promote_type(T1, T2)}}
+
+"""
+    _special_epsilon(p::P{T})
+
+Returns:
+- `_NORM_EPS` if neither p.x nor p.big need special treatment
+- `_INF_EPS` if p.x or p.big have special values and the epsilon should be considered infinite
+- `_ZERO_EPS` if p.x or p.big have special values and the epsilon should be considered zero
+"""
+@inline function _special_epsilon(p::P{T})::Int where {T <: AbstractFloat}
+    if iszero(p.x) && !iszero(p.big)
+        return _INF_EPS
+    elseif iszero(p.x) && iszero(p.big)
+        return _ZERO_EPS
+        # order matters: isfinite returns false for NaN values, so treat NaNs first
+    elseif xor(isnan(p.x), isnan(p.big))
+        return _INF_EPS
+    elseif isnan(p.x) && isnan(p.big)
+        return _ZERO_EPS
+    elseif xor(isfinite(p.x), isfinite(p.big))
+        return _INF_EPS
+    elseif !isfinite(p.x) && !isfinite(p.big) && sign(p.x) != sign(p.big)
+        return _INF_EPS
+    elseif !isfinite(p.x) && !isfinite(p.big) && sign(p.x) == sign(p.big)
+        return _ZERO_EPS
+    else
+        return _NORM_EPS
+    end
+end

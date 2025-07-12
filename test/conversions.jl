@@ -1,11 +1,10 @@
 FLOAT_TYPES = [Float16, Float32, Float64]
 INVALID_FLOAT_TYPES = [
-    BigFloat,               # cannot construct with bigfloat, wouldn't make sense
     PrecisionCarrier{Float16},   # cannot construct PrecisionCarrier{PrecisionCarrier}
     PrecisionCarrier{Float32},
     PrecisionCarrier{Float64},
 ]
-SOURCE_VALUES = [
+SOURCE_VALUES = Any[
     Float16(1.0),
     Float32(1.0),
     Float64(1.0),
@@ -22,6 +21,7 @@ SOURCE_VALUES = [
     PrecisionCarrier{Float16}(1.0),
     PrecisionCarrier{Float32}(1.0),
     PrecisionCarrier{Float64}(1.0),
+    big(1.0),
 ]
 
 @testset "converting $(typeof(v)): $v" for v in SOURCE_VALUES
@@ -35,7 +35,7 @@ SOURCE_VALUES = [
         else
             @test t == PrecisionCarrier{Float64}
         end
-        @test PrecisionCarriers.epsilons(p) == 0
+        @test epsilons(p) == 0
     end
 
     @testset "default constructor" begin
@@ -48,19 +48,19 @@ SOURCE_VALUES = [
         else
             @test t == PrecisionCarrier{Float64}
         end
-        @test PrecisionCarriers.epsilons(p) == 0
+        @test epsilons(p) == 0
     end
 
     @testset "conversion to PrecisionCarrier{$F}" for F in FLOAT_TYPES
         p = convert(PrecisionCarrier{F}, v)
         @test typeof(p) == PrecisionCarrier{F}
-        @test PrecisionCarriers.epsilons(p) == 0
+        @test epsilons(p) == 0
     end
 
     @testset "typed constructor PrecisionCarrier{$F}" for F in FLOAT_TYPES
         p = PrecisionCarrier{F}(v)
         @test typeof(p) == PrecisionCarrier{F}
-        @test PrecisionCarriers.epsilons(p) == 0
+        @test epsilons(p) == 0
     end
 
     @testset "invalid conversion to PrecisionCarrier{$F}" for F in INVALID_FLOAT_TYPES
