@@ -86,3 +86,9 @@ SOURCE_VALUES = Any[
         @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
     end
 end
+
+@testset "promote BigFloat carrier" begin
+    p = precify(big(1.0))
+    p = p * 5
+    @test typeof(p) == PrecisionCarrier{BigFloat}
+end

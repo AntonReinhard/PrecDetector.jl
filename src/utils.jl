@@ -54,7 +54,7 @@ julia> unstable(precify(0.5), 30)
 0.4999999971854335 <ε=25351362>
 
 julia> significant_digits(ans)
-8.249558460661778
+8.249558483913594
 ```
 """
 function significant_digits(p::P{T}) where {T <: AbstractFloat}
