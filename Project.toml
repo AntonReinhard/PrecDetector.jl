@@ -1,7 +1,7 @@
 name = "PrecisionCarriers"
 uuid = "5b00bbae-6f32-4368-a198-a7942af0a543"
-authors = ["Anton Reinhard <anton.reinhard@hzdr.de>"]
-version = "0.1.0"
+authors = ["Anton Reinhard <anton.reinhard@proton.me>"]
+version = "0.1.1"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
