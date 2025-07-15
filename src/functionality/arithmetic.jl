@@ -104,3 +104,7 @@ end
 function Base.nextfloat(p::P{T}, n::Integer) where {T}
     return P{T}(nextfloat(p.x, n), big(nextfloat(T(p.big), n)))
 end
+
+# ternary function
+@_ternary_function fma
+@_ternary_function muladd

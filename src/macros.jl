@@ -36,6 +36,20 @@ macro _binary_function(operator)
     ")
 end
 
+macro _ternary_function(operator)
+    # other cases should be caught by generic Base julia type promotion overloads
+    return Meta.parse("
+    begin
+        function Base.$(operator)(p1::P, p2::P, p3::P; kw...)
+            return P(
+                $(operator)(p1.x, p2.x, p3.x; kw...),
+                $(operator)(p1.big, p2.big, p3.big; kw...)
+            )
+        end
+    end
+    ")
+end
+
 macro _unary_comparison(operator)
     return Meta.parse("
         Base.:($(operator))(p1::P; kw...) = $(operator)(p1.x; kw...)
