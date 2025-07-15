@@ -7,6 +7,8 @@
 @_binary_function /
 @_binary_function \
 @_binary_function ^
+@_binary_function mod
+@_binary_function rem
 @_unary_function abs
 
 # min/max

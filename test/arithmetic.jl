@@ -25,7 +25,7 @@ UNARY_OPS = [
 BINARY_OPS = [
     +, -, *, /, \, ^, min, max,
     hypot, log, ldexp, sincos,
-    flipsign, copysign,
+    flipsign, copysign, mod, rem,
 ]
 
 TYPE_OPS = [
