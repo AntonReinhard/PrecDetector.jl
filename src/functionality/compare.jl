@@ -10,6 +10,7 @@
 @_unary_comparison ispow2
 @_unary_comparison isfinite
 @_unary_comparison isnan
+@_unary_comparison isinf
 @_unary_comparison isinteger
 @_unary_comparison iseven
 @_unary_comparison isodd

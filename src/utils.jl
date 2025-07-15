@@ -153,16 +153,15 @@ Returns:
         return _INF_EPS
     elseif iszero(p.x) && iszero(p.big)
         return _ZERO_EPS
-        # order matters: isfinite returns false for NaN values, so treat NaNs first
-    elseif xor(isnan(p.x), isnan(p.big))
+    elseif isnan(p.x) ⊻ isnan(p.big)
         return _INF_EPS
     elseif isnan(p.x) && isnan(p.big)
         return _ZERO_EPS
-    elseif xor(isfinite(p.x), isfinite(p.big))
+    elseif isinf(p.x) ⊻ isinf(p.big)
         return _INF_EPS
-    elseif !isfinite(p.x) && !isfinite(p.big) && sign(p.x) != sign(p.big)
+    elseif isinf(p.x) && isinf(p.big) && sign(p.x) != sign(p.big)
         return _INF_EPS
-    elseif !isfinite(p.x) && !isfinite(p.big) && sign(p.x) == sign(p.big)
+    elseif isinf(p.x) && isinf(p.big) && sign(p.x) == sign(p.big)
         return _ZERO_EPS
     else
         return _NORM_EPS

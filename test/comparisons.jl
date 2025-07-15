@@ -22,6 +22,7 @@ TEST_VALUES = [
             @test ispow2(v) == ispow2(p)
             @test isfinite(v) == isfinite(p)
             @test isnan(v) == isnan(p)
+            @test isinf(v) == isinf(p)
             @test isinteger(v) == isinteger(p)
             @test iseven(v) == iseven(p)
             @test isodd(v) == isodd(p)
