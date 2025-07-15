@@ -7,6 +7,8 @@
 @_binary_function /
 @_binary_function \
 @_binary_function ^
+@_binary_function mod
+@_binary_function rem
 @_unary_function abs
 
 # min/max
@@ -74,3 +76,41 @@ function Base.sincos(p::P)
     end
     return (sin(p), cos(p))
 end
+
+# floating point functions
+@_unary_function sign
+@_binary_function flipsign
+@_binary_function copysign
+@_unary_type_function maxintfloat
+@_unary_type_function typemin
+@_unary_type_function typemax
+@_unary_type_function floatmin
+@_unary_type_function floatmax
+@_unary_type_function eps
+@_unary_type_function precision
+@_unary_function widen
+
+# for these functions, convert the big part to T, then apply the operator,
+# then convert back, to treat the big number *as if* it was a T
+function Base.eps(p::P{T}) where {T}
+    return P{T}(eps(p.x), big(eps(T(p.big))))
+end
+function Base.prevfloat(p::P{T}) where {T}
+    return P{T}(prevfloat(p.x), big(prevfloat(T(p.big))))
+end
+function Base.prevfloat(p::P{T}, n::Integer) where {T}
+    return P{T}(prevfloat(p.x, n), big(prevfloat(T(p.big), n)))
+end
+function Base.nextfloat(p::P{T}) where {T}
+    return P{T}(nextfloat(p.x), big(nextfloat(T(p.big))))
+end
+function Base.nextfloat(p::P{T}, n::Integer) where {T}
+    return P{T}(nextfloat(p.x, n), big(nextfloat(T(p.big), n)))
+end
+function Base.widen(::Type{P{T}}) where {T}
+    return P{widen(T)}
+end
+
+# ternary function
+@_ternary_function fma
+@_ternary_function muladd
