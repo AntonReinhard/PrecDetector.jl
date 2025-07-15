@@ -2,6 +2,7 @@ PREC_TYPES = [PrecisionCarrier{Float16}, PrecisionCarrier{Float32}, PrecisionCar
 TEST_VALUES = [
     0.0,
     1.0,
+    2.0,
     Inf,
     -Inf,
     -0.0,
@@ -11,7 +12,7 @@ TEST_VALUES = [
 UNARY_OPS = [
     +, -, abs, sqrt, cbrt, exp, expm1, log,
     log2, log10, log1p, exponent, significand,
-    sign, eps, widen,
+    sign, eps, widen, prevfloat, nextfloat,
     sin, cos, tan, cot, sec, csc,               # "normal"
     sinh, cosh, tanh, coth, sech, csch,         # hyperbolic
     asin, acos, atan, acot, asec, acsc,         # arc
@@ -24,8 +25,12 @@ UNARY_OPS = [
 
 BINARY_OPS = [
     +, -, *, /, \, ^, min, max,
-    hypot, log, ldexp, sincos,
+    hypot, log,
     flipsign, copysign, mod, rem,
+]
+
+BINARY_WITH_INT_OPS = [ # binary functions but the second value needs to be int
+    prevfloat, nextfloat, ldexp,
 ]
 
 TYPE_OPS = [
@@ -45,6 +50,33 @@ TYPE_OPS = [
                 @test isapprox(op(v), op(p)) || (isnan(op(v)) && isnan(op(p)))
             catch e
                 @test_throws e op(p)
+            end
+        end
+    end
+
+    @testset "$op" for op in BINARY_OPS
+        for v1 in FLOAT_T.(TEST_VALUES), v2 in FLOAT_T.(TEST_VALUES)
+            p1 = P(v1)
+            p2 = P(v2)
+
+            try
+                op(v1, v2)
+                @test isapprox(op(v1, v2), op(p1, p2)) || (isnan(op(v1, v2)) && isnan(op(p1, p2)))
+            catch e
+                @test_throws e op(p1, p2)
+            end
+        end
+    end
+
+    @testset "$op" for op in BINARY_WITH_INT_OPS
+        for v in FLOAT_T.(TEST_VALUES), vint in Int[0, 1, 2, 10]
+            p = P(v)
+
+            try
+                op(v, vint)
+                @test isapprox(op(v, vint), op(p, vint)) || (isnan(op(v, vint)) && isnan(op(p, vint)))
+            catch e
+                @test_throws e op(p, vint)
             end
         end
     end
