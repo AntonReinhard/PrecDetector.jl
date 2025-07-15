@@ -11,7 +11,7 @@ TEST_VALUES = [
 UNARY_OPS = [
     +, -, abs, sqrt, cbrt, exp, expm1, log,
     log2, log10, log1p, exponent, significand,
-    sign, eps,
+    sign, eps, widen,
     sin, cos, tan, cot, sec, csc,               # "normal"
     sinh, cosh, tanh, coth, sech, csch,         # hyperbolic
     asin, acos, atan, acot, asec, acsc,         # arc
@@ -53,6 +53,10 @@ TYPE_OPS = [
         # can use proper == here instead of isapprox
         @test op(P) == op(eltype(P))
         @test epsilons(op(P)) == 0
+    end
+
+    @testset "widen" begin
+        @test widen(P) == PrecisionCarrier{widen(eltype(P))}
     end
 
     @testset "sincos" begin

@@ -88,6 +88,7 @@ end
 @_unary_type_function floatmax
 @_unary_type_function eps
 @_unary_type_function precision
+@_unary_function widen
 
 # for these functions, convert the big part to T, then apply the operator,
 # then convert back, to treat the big number *as if* it was a T
@@ -105,6 +106,9 @@ function Base.nextfloat(p::P{T}) where {T}
 end
 function Base.nextfloat(p::P{T}, n::Integer) where {T}
     return P{T}(nextfloat(p.x, n), big(nextfloat(T(p.big), n)))
+end
+function Base.widen(::Type{P{T}}) where {T}
+    return P{widen(T)}
 end
 
 # ternary function
