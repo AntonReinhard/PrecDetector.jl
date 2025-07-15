@@ -27,15 +27,6 @@ TEST_VALUES = [
             @test iseven(v) == iseven(p)
             @test isodd(v) == isodd(p)
             @test issubnormal(v) == issubnormal(p)
-
-            @test eps(FLOAT_T) == eps(P)
-
-            if (isnan(eps(v)))   # if eps(v) is NaN, eps(p) is NaN, and NaN != NaN
-                @test isnan(eps(p))
-                @test typeof(eps(p)) == P
-            else
-                @test eps(v) == eps(p)
-            end
         end
     end
 

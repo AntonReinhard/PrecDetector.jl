@@ -11,6 +11,7 @@ TEST_VALUES = [
 UNARY_OPS = [
     +, -, abs, sqrt, cbrt, exp, expm1, log,
     log2, log10, log1p, exponent, significand,
+    sign, eps,
     sin, cos, tan, cot, sec, csc,               # "normal"
     sinh, cosh, tanh, coth, sech, csch,         # hyperbolic
     asin, acos, atan, acot, asec, acsc,         # arc
@@ -24,6 +25,12 @@ UNARY_OPS = [
 BINARY_OPS = [
     +, -, *, /, \, ^, min, max,
     hypot, log, ldexp, sincos,
+    flipsign, copysign,
+]
+
+TYPE_OPS = [
+    maxintfloat, typemin, typemax, floatmin,
+    floatmax, eps, precision,
 ]
 
 @testset "$P" for P in PREC_TYPES
@@ -40,6 +47,12 @@ BINARY_OPS = [
                 @test_throws e op(p)
             end
         end
+    end
+
+    @testset "$op" for op in TYPE_OPS
+        # can use proper == here instead of isapprox
+        @test op(P) == op(eltype(P))
+        @test epsilons(op(P)) == 0
     end
 
     @testset "sincos" begin
@@ -89,4 +102,6 @@ BINARY_OPS = [
             end
         end
     end
+
+
 end
