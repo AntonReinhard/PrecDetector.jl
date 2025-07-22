@@ -2,7 +2,6 @@ module PrecisionCarriers
 
 using Statistics
 using Printf
-using DataStructures
 using ProgressMeter
 
 export PrecisionCarrier
