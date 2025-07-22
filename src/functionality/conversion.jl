@@ -1,9 +1,5 @@
-# these conversions are slightly evil, but necessary
-# so unaware code does not accidentally cast away
-# the PrecisionCarriers
-
 function Base.convert(::Type{T}, p::P) where {T <: AbstractFloat}
-    return P{T}(convert(T, p.x), p.big)
+    return convert(T, p.x)
 end
 function Base.convert(::Type{P{T}}, p::P) where {T <: AbstractFloat}
     return P{T}(convert(T, p.x), p.big)
