@@ -77,12 +77,12 @@ SOURCE_VALUES = Any[
         p = PrecisionCarrier{F1}(v)
         pc = convert(F2, p)
 
-        @test typeof(pc) == PrecisionCarrier{F2}
+        @test typeof(pc) == F2
         @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
 
         # "constructor" call
         pc = F2(p)
-        @test typeof(pc) == PrecisionCarrier{F2}
+        @test typeof(pc) == F2
         @test isapprox(pc, v; rtol = max(eps(F1), eps(F2)))
     end
 end
