@@ -8,7 +8,7 @@ const _INF_EPS::Int = 1
 const _ZERO_EPS::Int = 2
 
 """
-    epsilons(p::PrecisionCarrier{T})::
+    epsilons(p::PrecisionCarrier{T})
 
 Return the number of epsilons of relative difference between `p.big` and `p.x` as an
 `EpsT` (`Int64`) value.
@@ -149,6 +149,8 @@ Returns:
 - `_ZERO_EPS` if p.x or p.big have special values and the epsilon should be considered zero
 """
 @inline function _special_epsilon(p::P{T})::Int where {T <: AbstractFloat}
+    # consider the `big` part inf if it's larger than T's max, even if it's not actually "Inf"
+    big_isinf = abs(p.big) > floatmax(T)
     if iszero(p.x) && !iszero(p.big)
         return _INF_EPS
     elseif iszero(p.x) && iszero(p.big)
@@ -157,11 +159,11 @@ Returns:
         return _INF_EPS
     elseif isnan(p.x) && isnan(p.big)
         return _ZERO_EPS
-    elseif isinf(p.x) ⊻ isinf(p.big)
+    elseif isinf(p.x) ⊻ big_isinf
         return _INF_EPS
-    elseif isinf(p.x) && isinf(p.big) && sign(p.x) != sign(p.big)
+    elseif isinf(p.x) && big_isinf && sign(p.x) != sign(p.big)
         return _INF_EPS
-    elseif isinf(p.x) && isinf(p.big) && sign(p.x) == sign(p.big)
+    elseif isinf(p.x) && big_isinf && sign(p.x) == sign(p.big)
         return _ZERO_EPS
     else
         return _NORM_EPS
