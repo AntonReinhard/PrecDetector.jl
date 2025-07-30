@@ -5,7 +5,7 @@ foo(x, y) = sqrt(abs(x^2 - y^2))
 
 @bench_epsilons foo(1.0, y) ranges = begin
     y = (0.5, 1.0)
-end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
+end search_method = :evenly_spaced</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
   <span class="sgr32">minimum: </span> <span class="sgr1">0</span> ε
   <span class="sgr34">median:  </span> <span class="sgr1">0.0</span> ε
   <span class="sgr35">mean:    </span> <span class="sgr1">0.655</span> ε
@@ -23,26 +23,24 @@ foo(Float64(1.0), precify(0.9999499949995)) -&gt; <span class="sgr35">&lt;ε=103
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
   <span class="sgr32">minimum: </span> <span class="sgr1">0</span> ε
   <span class="sgr34">median:  </span> <span class="sgr1">0.0</span> ε
-  <span class="sgr35">mean:    </span> <span class="sgr1">1.294</span> ε
-  <span class="sgr31">maximum: </span> <span class="sgr1">5628</span> ε
+  <span class="sgr35">mean:    </span> <span class="sgr1">0.525</span> ε
+  <span class="sgr31">maximum: </span> <span class="sgr1">645</span> ε
 
-█ <span class="sgr35"> </span>                                                         
-█▁<span class="sgr35">▁</span>▁▁▃▁▁▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▂▂▁▁▁▁▁▁▁▂▁▁▁▁▁▂▁▁▁▁▁▁▁▁▁▂
-<span class="sgr32">^ 1 ε</span>                   <span class="sgr4"><span class="sgr1">log scale</span></span>                   <span class="sgr31">5628 ε ^</span>
+█                                                           
+█▁▁▁▁▁▃▁▁▁▃▁▁▂▁▂▂▁▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▁▁▁▁▁▁▁▁▂▁▁▂▁▁▁▁▁▁▁▂
+<span class="sgr32">^ 1 ε</span>                   <span class="sgr4"><span class="sgr1">log scale</span></span>                    <span class="sgr31">645 ε ^</span>
 
-  <span class="sgr1">largest imprecisions</span>:
-foo(exp2(precify(0.5)), precify(1.4141414141414141)) -&gt; <span class="sgr35">&lt;ε=5628&gt;</span>
-foo(exp2(precify(0.5606060606060606)), precify(1.4747474747474747)) -&gt; <span class="sgr35">&lt;ε=1399&gt;</span>
+  <span class="sgr1">no imprecisions &gt; 1000ε found</span>
 </code></pre><p>To interpolate values from your local scope, use the <code>$</code> syntax:</p><pre><code class="language-julia hljs">z = 5.0
 
 @bench_epsilons foo(exp2(x), y * $z) ranges = begin
     x = (1.0, 2.0)
     y = (0.0, 0.3)
-end search_method = :random_search</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
+end search_method = :random</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  <span class="sgr36">samples: </span> <span class="sgr1">10000</span>
   <span class="sgr32">minimum: </span> <span class="sgr1">0</span> ε
   <span class="sgr34">median:  </span> <span class="sgr1">0.0</span> ε
   <span class="sgr35">mean:    </span> <span class="sgr1">0.17</span> ε
   <span class="sgr31">maximum: </span> <span class="sgr1">1</span> ε
 
   <span class="sgr1">no imprecisions &gt; 1000ε found</span>
-</code></pre><p>For information on the supported keyword arguments, see also <a href="../../lib/public/#PrecisionCarriers.@bench_epsilons"><code>@bench_epsilons</code></a>.</p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../example/">« Example</a><a class="docs-footer-nextpage" href="../manual/">Manual »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Wednesday 30 July 2025 18:35">Wednesday 30 July 2025</span>. Using Julia version 1.10.10.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p>For information on the supported keyword arguments, see also <a href="../../lib/public/#PrecisionCarriers.@bench_epsilons"><code>@bench_epsilons</code></a>.</p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../example/">« Example</a><a class="docs-footer-nextpage" href="../manual/">Manual »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Wednesday 30 July 2025 21:08">Wednesday 30 July 2025</span>. Using Julia version 1.10.10.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
