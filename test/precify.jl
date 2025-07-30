@@ -14,7 +14,6 @@ end
 DIMENSIONS = (1, 2, 3)
 FLOAT_TYPES = [Float16, Float32, Float64]
 INVALID_FLOAT_TYPES = [
-    BigFloat,               # cannot construct with bigfloat, wouldn't make sense
     PrecisionCarrier{Float16},   # cannot construct PrecisionCarrier{PrecisionCarrier}
     PrecisionCarrier{Float32},
     PrecisionCarrier{Float64},

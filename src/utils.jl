@@ -15,7 +15,7 @@ Return the number of epsilons of relative difference between `p.big` and `p.x` a
 
 !!! note
     Returns `EpsMax` (`typemax(Int64)`) if the difference is infinite, for example when
-    the float reports `Inf` and the `BigFloat` has a non-infinite value.
+    the float reports `Inf` and the [`BigT`](@ref) has a non-infinite value.
 """
 function epsilons(p::P{T})::EpsT where {T <: AbstractFloat}
     special_eps = _special_epsilon(p)
@@ -24,7 +24,7 @@ function epsilons(p::P{T})::EpsT where {T <: AbstractFloat}
     elseif special_eps == _INF_EPS
         return EpsMax
     else
-        no_eps = abs(p.big / p.x - one(BigFloat)) / big(eps(one(p.x)))
+        no_eps = abs(p.big / p.x - one(BigT)) / big(eps(one(p.x)))
         if (no_eps > EpsMax)
             return EpsMax
         else
@@ -64,14 +64,14 @@ function significant_digits(p::P{T}) where {T <: AbstractFloat}
         # with the machine epsilon
         return -log10(eps(one(p.x)))
     elseif special_eps == _INF_EPS
-        return 0.0
+        return zero(T)
     else
-        relative_diff = abs(p.big / p.x - one(BigFloat))
+        relative_diff = abs(p.big / p.x - one(BigT))
         if iszero(relative_diff)
             # return maximum number of digits carried by the type
             relative_diff = eps(p.x)
         end
-        return Float64(-log10(relative_diff))
+        return T(-log10(relative_diff))
     end
 end
 

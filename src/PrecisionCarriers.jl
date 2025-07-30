@@ -12,8 +12,29 @@ export reset_eps!
 
 export @bench_epsilons
 
+"""
+    EpsT
+
+The integer type of epsilons, for example the return type of the 
+[`epsilons`](@ref) function. `Int64` by default.
+"""
 const EpsT = Int64
+
+"""
+    EpsMax
+
+The maximum representable number of epsilons. `typemax(EpsT)` by
+default. If an epsilon would be larger than this value, it is shown
+as "infinite" epsilons.
+"""
 const EpsMax = typemax(EpsT)
+
+"""
+    BigT
+
+The backend high precision float type used by [`PrecisionCarrier`](@ref)s.
+"""
+const BigT = BigFloat
 
 include("type.jl")
 include("utils.jl")
