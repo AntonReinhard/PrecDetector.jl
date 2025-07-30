@@ -41,6 +41,21 @@ function _random_samples(ranges::Tuple, n::Integer)
     return Iterators.map(f, 1:n)
 end
 
+"""
+    _pseudo_random_samples(ranges::Tuple{Vararg{Tuple{<:Real, <:Real}}}, n::Integer)
+
+Return an iterator generating `n` pseudo-randomly generated samples over the Cartesian grid defined by `ranges`.
+Each element of `ranges` must be a (lo, hi) tuple.
+This uses the package `Sobol.jl` to produce pseudorandom numbers within the given hypercube. The resulting
+numbers are more predictable and evenly spaced than real randomness, which can be better to sample a high dimensional
+space. Also, the generated samples are reproducible.
+"""
+function _pseudo_random_samples(ranges::Tuple, n::Integer)
+    @debug "generating pseudorandom samples from ranges: $ranges"
+    s = Sobol(getindex.(ranges, 1), getindex(ranges, 2))
+    return Iterators.take(s, n)
+end
+
 function _precify_args!(args, var_symbols)
     for i in eachindex(args)
         if typeof(args[i]) == Symbol

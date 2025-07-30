@@ -23,9 +23,10 @@ a terminal similar to BenchmarkTools' `@benchmark`.
 
 Supported keyword arguments:
 - `search_method`: How the sampling should be done. Supported are:
+    - `:pseudo_random`: Create pseudo-random sample points in the search space using Sobol.jl.
     - `:evenly_spaced`: Creates an evenly spaced grid across all ranges
-    - `:random_search`: Randomly samples points in the given ranges.
-    The default is `:evenly_spaced`.
+    - `:random`: Randomly samples points in the given ranges.
+    The default is `:pseudo_random`.
 - `samples`: The number of samples taken. Default: 10000
 - `epsilon_limit`: Results with epsilons larger than this will be stored together with the arguments
   that produced the imprecise result. Default: 1000
@@ -119,7 +120,7 @@ macro bench_epsilons(
 
     # call of the function and result handling, independent of the search method
     call_work = quote
-        next!(prog)
+        ProgressMeter.next!(prog)
         p = $(esc(func))($(func_args...))
         insert!(res, epsilons(p), $var_expr)
     end
@@ -136,10 +137,21 @@ macro bench_epsilons(
                 return res
             end
         end
-    elseif kwargs[:search_method] == :random_search
+    elseif kwargs[:search_method] == :random
         full_call = quote
             let # COV_EXCL_LINE
                 iter = PrecisionCarriers._random_samples(($(ranges)), $(kwargs[:samples]))
+                $call_setup # COV_EXCL_LINE
+                for $var_expr in iter
+                    $call_work # COV_EXCL_LINE
+                end
+                return res
+            end
+        end
+    elseif kwargs[:search_method] == :pseudo_random
+        full_call = quote
+            let # COV_EXCL_LINE
+                iter = PrecisionCarriers._pseudo_random_samples(($(ranges)), $(kwargs[:samples]))
                 $call_setup # COV_EXCL_LINE
                 for $var_expr in iter
                     $call_work # COV_EXCL_LINE

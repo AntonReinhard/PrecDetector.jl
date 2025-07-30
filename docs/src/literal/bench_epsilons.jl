@@ -10,7 +10,7 @@ foo(x, y) = sqrt(abs(x^2 - y^2))
 
 @bench_epsilons foo(1.0, y) ranges = begin
     y = (0.5, 1.0)
-end
+end search_method = :evenly_spaced
 
 # Function calls can be nested inside the expression as well, or multiple variables
 # sampled simultaneously:
@@ -27,6 +27,6 @@ z = 5.0
 @bench_epsilons foo(exp2(x), y * $z) ranges = begin
     x = (1.0, 2.0)
     y = (0.0, 0.3)
-end search_method = :random_search
+end search_method = :random
 
 # For information on the supported keyword arguments, see also [`@bench_epsilons`](@ref).

@@ -3,6 +3,7 @@ module PrecisionCarriers
 using Statistics
 using Printf
 using ProgressMeter
+using Sobol
 
 export PrecisionCarrier
 export precify

@@ -45,14 +45,14 @@ significant_digits(p)
 @bench_epsilons f(x, y) ranges = begin
     x = (0.0, 5.0)
     y = (0.0, 5.0)
-end search_method = :random_search
+end
 
 # Compare this with the improved version:
 
 @bench_epsilons f_improved(x, y) ranges = begin
     x = (0.0, 5.0)
     y = (0.0, 5.0)
-end search_method = :random_search
+end
 
 # For more information on the [`@bench_epsilons`](@ref) macro, please refer to its docstring or the
 # [tutorial](bench_epsilons.md).
