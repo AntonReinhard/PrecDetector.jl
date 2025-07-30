@@ -15,7 +15,7 @@ export @bench_epsilons
 """
     EpsT
 
-The integer type of epsilons, for example the return type of the 
+The integer type of epsilons, for example the return type of the
 [`epsilons`](@ref) function. `Int64` by default.
 """
 const EpsT = Int64
