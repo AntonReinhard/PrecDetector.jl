@@ -52,7 +52,7 @@ space. Also, the generated samples are reproducible.
 """
 function _pseudo_random_samples(ranges::Tuple, n::Integer)
     @debug "generating pseudorandom samples from ranges: $ranges"
-    s = Sobol(getindex.(ranges, 1), getindex(ranges, 2))
+    s = SobolSeq(getindex.(ranges, 1), getindex.(ranges, 2))
     return Iterators.take(s, n)
 end
 
