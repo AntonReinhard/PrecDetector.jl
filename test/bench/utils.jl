@@ -6,6 +6,17 @@ RNG = MersenneTwister()
 @testset "samplers for $N points" for N in [10, 100, 1000]
     @testset "$M ranges"  for M in [1, 2, 3]
         ranges = ntuple(_ -> (rand(RNG), rand(RNG) + 1), M)
+        @testset "pseudo random search" begin
+            iter = PrecisionCarriers._pseudo_random_samples(ranges, N)
+
+            @test length(iter) == N
+            v = collect(iter)
+            @test length(v) == N
+            for i in 1:M
+                @test all(Ref(ranges[i][1]) .<= getindex.(v, Ref(i)) .<= Ref(ranges[i][2]))
+            end
+        end
+
         @testset "random search" begin
             iter = PrecisionCarriers._random_samples(ranges, N)
 

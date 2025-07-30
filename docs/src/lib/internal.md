@@ -24,6 +24,7 @@ EpsilonBenchmarkResult
 ```@docs
 _grid_samples
 _random_samples
+_pseudo_random_samples
 make_bins
 ascii_hist
 print_hist_info
