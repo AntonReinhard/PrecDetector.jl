@@ -50,7 +50,7 @@ macro bench_epsilons(
     kwargs = Dict{Symbol, Any}()
 
     # default values
-    kwargs[:search_method] = :evenly_spaced # how to search the space
+    kwargs[:search_method] = :pseudo_random # how to search the space
     kwargs[:samples] = 10000                # how many samples are taken
     kwargs[:epsilon_limit] = 1000           # the limit for imprecision in the results
     kwargs[:keep_n_values] = 5              # how many values with the worst imprecisions are kept
