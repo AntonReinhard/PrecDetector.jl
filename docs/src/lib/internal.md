@@ -7,6 +7,13 @@ CurrentModule = PrecisionCarriers
 Pages = ["internal.md"]
 ```
 
+## Constants
+```@docs
+EpsT
+EpsMax
+BigT
+```
+
 ## Types
 ```@docs
 TopKSortedList

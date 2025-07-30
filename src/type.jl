@@ -41,7 +41,7 @@ julia> unstable(precify(2), 128)
 """
 mutable struct PrecisionCarrier{T <: AbstractFloat} <: AbstractFloat
     x::T
-    big::BigFloat
+    big::BigT
 
     """
         PrecisionCarrier{T}(x, b)
@@ -60,17 +60,17 @@ mutable struct PrecisionCarrier{T <: AbstractFloat} <: AbstractFloat
 end
 
 # allow inference of generic T from given value
-function PrecisionCarrier(x::T, b::BigFloat) where {T <: AbstractFloat}
+function PrecisionCarrier(x::T, b::BigT) where {T <: AbstractFloat}
     return PrecisionCarrier{T}(x, b)
 end
 
 const P = PrecisionCarrier
 
 # convert various <:Real types explicitly
-P{T}(x::AbstractFloat) where {T <: AbstractFloat} = P{T}(T(x), big(x))
-P{T}(x::Integer) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
-P{T}(x::AbstractIrrational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
-P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), BigFloat(x))
+P{T}(x::AbstractFloat) where {T <: AbstractFloat} = P{T}(T(x), convert(BigT, x))
+P{T}(x::Integer) where {T <: AbstractFloat} = P{T}(T(x), convert(BigT, x))
+P{T}(x::AbstractIrrational) where {T <: AbstractFloat} = P{T}(T(x), convert(BigT, x))
+P{T}(x::Rational) where {T <: AbstractFloat} = P{T}(T(x), convert(BigT, x))
 
 # cast other PrecisionCarrier
 P{T}(p::P) where {T <: AbstractFloat} = P{T}(p.x, p.big)
